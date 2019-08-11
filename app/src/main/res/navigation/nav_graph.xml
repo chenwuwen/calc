@@ -1,5 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
 
+    <fragment
+        android:id="@+id/questionFragment"
+        android:name="cn.kanyun.calc.activity.QuestionFragment"
+        android:label="question_fragment"
+        tools:layout="@layout/question_fragment" >
+        <action
+            android:id="@+id/action_questionFragment_to_loseFragment"
+            app:destination="@id/loseFragment" />
+        <action
+            android:id="@+id/action_questionFragment_to_unlockFragment"
+            app:destination="@id/unlockFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loseFragment"
+        android:name="cn.kanyun.calc.activity.LoseFragment"
+        android:label="lose_fragment"
+        tools:layout="@layout/lose_fragment" >
+        <action
+            android:id="@+id/action_loseFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/unlockFragment"
+        android:name="cn.kanyun.calc.activity.UnlockFragment"
+        android:label="unlock_fragment"
+        tools:layout="@layout/unlock_fragment" >
+        <action
+            android:id="@+id/action_unlockFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="cn.kanyun.calc.activity.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_mainFragment_to_questionFragment"
+            app:destination="@id/questionFragment" />
+    </fragment>
+    <action android:id="@+id/action_global_mainFragment" app:destination="@id/mainFragment" />
 </navigation>
