@@ -1,8 +1,11 @@
 package cn.kanyun.calc.activity.viewmodel;
 
 import android.app.Application;
+import android.content.Context;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.TypedArrayUtils;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
@@ -10,8 +13,11 @@ import androidx.lifecycle.SavedStateHandle;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.SpanUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.google.common.primitives.Ints;
 
 import java.util.Random;
+
+import es.dmoral.toasty.Toasty;
 
 /**
  * AndroidViewModel的好处是可以访问SharedPrefences
@@ -20,6 +26,8 @@ import java.util.Random;
 public class ScoreViewModel extends AndroidViewModel {
 
     SavedStateHandle handle;
+
+    Context context;
 
     /**
      * 历史最高分
@@ -52,12 +60,19 @@ public class ScoreViewModel extends AndroidViewModel {
     private static String SHARED_PREFENCES_NAME = "calc";
 
     /**
+     * 解锁条件
+     */
+    private static int[] unLockScore = {5, 10, 20, 50};
+
+    /**
      * 解锁标志
      */
     public boolean unLock = false;
 
     public ScoreViewModel(@NonNull Application application, SavedStateHandle savedStateHandle) {
         super(application);
+//        初始化Context,构造函数里的Application,是因为该ViewModel是继承的AndroidViewModel而不是继承ViewModel
+        this.context = application;
 //        如果不包含最高分数,则是第一次进入
         if (!savedStateHandle.contains(KEY_HIGH_SCORE)) {
             SPUtils sp = SPUtils.getInstance(SHARED_PREFENCES_NAME);
@@ -136,7 +151,7 @@ public class ScoreViewModel extends AndroidViewModel {
      */
     void saveHighScore() {
         SPUtils.getInstance(SHARED_PREFENCES_NAME).put(KEY_HIGH_SCORE, getHighScore().getValue());
-        ToastUtils.showLong("历史最佳记录");
+        Toasty.success(context, "历史最佳记录", Toast.LENGTH_LONG, true).show();
     }
 
     /**
@@ -149,11 +164,14 @@ public class ScoreViewModel extends AndroidViewModel {
         if (getCurrentScore().getValue() > getHighScore().getValue()) {
             getHighScore().setValue(getCurrentScore().getValue());
             saveHighScore();
+
+//            判断是否达到解锁分数,并且当前分数超过了历史最高纪录
+            if (Ints.contains(unLockScore, getCurrentScore().getValue())) {
+//                设置解锁标志为true
+                unLock = true;
+            }
         }
-//        判断是否达到解锁分数
-        if (getCurrentScore().getValue() > 100) {
-            unLock = true;
-        }
+
 //        生成下一个计算式
         generator();
     }

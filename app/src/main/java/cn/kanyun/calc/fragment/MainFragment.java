@@ -1,4 +1,4 @@
-package cn.kanyun.calc.activity;
+package cn.kanyun.calc.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

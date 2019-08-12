@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 
+
 android {
     compileSdkVersion 28
     buildToolsVersion "29.0.0"
@@ -21,6 +22,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+//    编译设置
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -38,5 +45,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0-alpha01'
     implementation 'com.blankj:utilcode:1.25.7'
+    implementation group: 'com.google.guava', name: 'guava', version: '28.0-android'
+//    带颜色的吐司
+    implementation 'com.github.GrenderG:Toasty:1.4.2'
 
 }

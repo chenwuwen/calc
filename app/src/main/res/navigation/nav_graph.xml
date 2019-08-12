@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/questionFragment"
-        android:name="cn.kanyun.calc.activity.QuestionFragment"
+        android:name="cn.kanyun.calc.fragment.QuestionFragment"
         android:label="question_fragment"
         tools:layout="@layout/question_fragment" >
         <action
@@ -19,25 +19,31 @@
     </fragment>
     <fragment
         android:id="@+id/loseFragment"
-        android:name="cn.kanyun.calc.activity.LoseFragment"
+        android:name="cn.kanyun.calc.fragment.LoseFragment"
         android:label="lose_fragment"
         tools:layout="@layout/lose_fragment" >
         <action
             android:id="@+id/action_loseFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_loseFragment_to_questionFragment"
+            app:destination="@id/questionFragment" />
     </fragment>
     <fragment
         android:id="@+id/unlockFragment"
-        android:name="cn.kanyun.calc.activity.UnlockFragment"
+        android:name="cn.kanyun.calc.fragment.UnlockFragment"
         android:label="unlock_fragment"
         tools:layout="@layout/unlock_fragment" >
         <action
             android:id="@+id/action_unlockFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_unlockFragment_to_questionFragment"
+            app:destination="@id/questionFragment" />
     </fragment>
     <fragment
         android:id="@+id/mainFragment"
-        android:name="cn.kanyun.calc.activity.MainFragment"
+        android:name="cn.kanyun.calc.fragment.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main">
         <action

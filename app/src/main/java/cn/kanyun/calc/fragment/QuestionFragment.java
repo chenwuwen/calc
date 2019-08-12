@@ -1,4 +1,4 @@
-package cn.kanyun.calc.activity;
+package cn.kanyun.calc.fragment;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.SavedStateVMFactory;
@@ -15,12 +15,12 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.blankj.utilcode.util.ToastUtils;
+import android.widget.Toast;
 
 import cn.kanyun.calc.R;
 import cn.kanyun.calc.activity.viewmodel.ScoreViewModel;
 import cn.kanyun.calc.databinding.QuestionFragmentBinding;
+import es.dmoral.toasty.Toasty;
 
 public class QuestionFragment extends Fragment implements View.OnClickListener {
 
@@ -41,8 +41,14 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        Bundle args = getArguments();
 //        这里使用requireActivity()getActivity()都可以
         mViewModel = ViewModelProviders.of(requireActivity(), new SavedStateVMFactory(requireActivity())).get(ScoreViewModel.class);
+        if (args != null && args.getBoolean("loseFlg")) {
+//            如果跳转到该Fragment的上一个Fragment是LoseFragment,那么重置当前得分
+            mViewModel.getCurrentScore().setValue(0);
+        }
 //        第一次进入页面时生成计算式子,否则会显示成 0+0
         mViewModel.generator();
         questionFragmentBinding = DataBindingUtil.inflate(inflater, R.layout.question_fragment, container, false);
@@ -111,9 +117,15 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
                 break;
             default:
                 if (sb.length() < 1) {
-                    ToastUtils.showLong("请输入答案后提交");
+                    Toasty.warning(getContext(), "请输入答案后提交", Toast.LENGTH_SHORT, true).show();
                     return;
                 }
+
+//                配置Navigation跳转携带的参数
+                Bundle bundle = new Bundle();
+                bundle.putInt("currentScore", mViewModel.getCurrentScore().getValue());
+                bundle.putInt("highScore", mViewModel.getHighScore().getValue());
+
                 if (Integer.parseInt(sb.toString()) == mViewModel.getAnswer().getValue()) {
 //                    回答正确
                     mViewModel.answerCorrect();
@@ -121,13 +133,15 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
 //                    是否到达解锁分数
                     if (mViewModel.unLock) {
                         mViewModel.unLock = false;
+
                         NavController controller = Navigation.findNavController(v);
                         controller.navigate(R.id.action_questionFragment_to_unlockFragment);
                     }
                 } else {
+
 //                    回答失败,跳转到失败页面
                     NavController controller = Navigation.findNavController(v);
-                    controller.navigate(R.id.action_questionFragment_to_loseFragment);
+                    controller.navigate(R.id.action_questionFragment_to_loseFragment, bundle);
                 }
                 sb.setLength(0);
 

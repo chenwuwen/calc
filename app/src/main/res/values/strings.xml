@@ -19,8 +19,14 @@
     <string name="question_mark">\?</string>
     <string name="current_score">本次得分：</string>
     <string name="input_result">你的答案：%s</string>
-    <string name="lose_str">失败了,本次得分：</string>
+    <string name="lose_current_score_str">失败了,本次得分：%d</string>
     <string name="history_high_score">历史最高记录：</string>
+    <string name="quit_dialog_title">警告</string>
+    <string name="dialog_positive_message">确定</string>
+    <string name="dialog_negative_message">我再想想</string>
+    <string name="quit_dialog_message">确定退出吗?</string>
+    <string name="continue_message">继续挑战</string>
+    <string name="return_message">返回</string>
 
 
 </resources>
