@@ -6,7 +6,7 @@
     <data>
         <variable
             name="mainData"
-            type="cn.kanyun.calc.activity.viewmodel.ScoreViewModel" />
+            type="cn.kanyun.calc.viewmodel.ScoreViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

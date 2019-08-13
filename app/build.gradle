@@ -16,11 +16,33 @@ android {
             enabled = true
         }
     }
+
+    //    添加签名文件配置
+    signingConfigs {
+        release {
+            keyAlias 'calc'
+            keyPassword '123456'
+            storeFile file('calc.jks')
+            storePassword '123456'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            签名配置
+            signingConfig signingConfigs.release
         }
+    }
+
+//    默认生成的release版apk名为app-release.apk
+    android.applicationVariants.all {
+        variant ->
+            variant.outputs.all {
+                // 此处指定生成的apk文件名
+                outputFileName = "calc.apk"
+            }
     }
 
 //    编译设置
@@ -48,5 +70,11 @@ dependencies {
     implementation group: 'com.google.guava', name: 'guava', version: '28.0-android'
 //    带颜色的吐司
     implementation 'com.github.GrenderG:Toasty:1.4.2'
+    implementation 'com.github.razerdp:BasePopup:2.2.1'
+//    腾讯开源的UI框架
+    implementation 'com.qmuiteam:qmui:1.4.0'
+    implementation 'com.qmuiteam:arch:0.6.1'
+
+
 
 }

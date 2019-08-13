@@ -15,8 +15,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import cn.kanyun.calc.R;
-import cn.kanyun.calc.activity.viewmodel.ScoreViewModel;
 import cn.kanyun.calc.databinding.FragmentMainBinding;
+import cn.kanyun.calc.viewmodel.ScoreViewModel;
 
 
 public class MainFragment extends Fragment {
@@ -40,6 +40,11 @@ public class MainFragment extends Fragment {
                 NavController controller = Navigation.findNavController(v);
                 controller.navigate(R.id.action_mainFragment_to_questionFragment);
             }
+        });
+//        跳到设置页面
+        mainFragmentBinding.buttonSetting.setOnClickListener(v -> {
+            NavController controller = Navigation.findNavController(v);
+            controller.navigate(R.id.action_mainFragment_to_settingFragment);
         });
         return mainFragmentBinding.getRoot();
     }

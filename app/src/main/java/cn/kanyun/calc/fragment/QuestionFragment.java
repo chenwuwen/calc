@@ -18,8 +18,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import cn.kanyun.calc.R;
-import cn.kanyun.calc.activity.viewmodel.ScoreViewModel;
 import cn.kanyun.calc.databinding.QuestionFragmentBinding;
+import cn.kanyun.calc.viewmodel.ScoreViewModel;
 import es.dmoral.toasty.Toasty;
 
 public class QuestionFragment extends Fragment implements View.OnClickListener {
