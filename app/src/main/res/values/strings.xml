@@ -34,6 +34,9 @@
     <string name="set_operator_symbol_multiplication">*</string>
     <string name="set_operator_symbol_division">÷</string>
     <string name="setting_save_btn_str">保存</string>
+    <string name="number_upper_type">数值上限类型</string>
+    <string name="join_operation_type">以参与运算的数值为准</string>
+    <string name="result_operation_type">以运算结果的数值为准(只有加减运算)</string>
 
 
 </resources>

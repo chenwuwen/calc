@@ -11,6 +11,7 @@ import androidx.lifecycle.SavedStateHandle;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
+import com.google.common.collect.Multimap;
 import com.google.common.math.IntMath;
 import com.google.common.primitives.Ints;
 import com.orhanobut.logger.Logger;
@@ -21,9 +22,11 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -31,6 +34,7 @@ import java.util.Set;
 
 import cn.kanyun.calc.Constant;
 import cn.kanyun.calc.R;
+import cn.kanyun.calc.Type;
 import es.dmoral.toasty.Toasty;
 
 /**
@@ -76,7 +80,15 @@ public class ScoreViewModel extends AndroidViewModel {
 
     private static List<String> OPERATOR_SYMBOLS = new ArrayList<>();
 
+    /**
+     * 数值上限
+     */
     private static int NUMBER_UPPER;
+
+    /**
+     * 数值上限类型
+     */
+    public int numberUpperType;
 
 
     /**
@@ -132,6 +144,8 @@ public class ScoreViewModel extends AndroidViewModel {
             }
 //            数值上限
             NUMBER_UPPER = sp.getInt(Constant.KEY_NUMBER_UPPER_LIMIT, 10);
+//            数值上限类型
+            numberUpperType = sp.getInt(Constant.KEY_NUMBER_UPPER_TYPE, Type.MEMBER_GUIDE.number);
 
         }
         this.handle = savedStateHandle;
@@ -324,7 +338,11 @@ public class ScoreViewModel extends AndroidViewModel {
         }
 
 //        生成下一个计算式
-        generator();
+        if (numberUpperType == Type.MEMBER_GUIDE.number) {
+            generator();
+        } else {
+            generator1();
+        }
     }
 
     /**
@@ -338,21 +356,44 @@ public class ScoreViewModel extends AndroidViewModel {
 
     /**
      * 接收shareprefences文件变化事件
-     *
+     * 这里使用的形参是Guava的Multimap
+     * 其发送端的真实类型是LinkedListMultimap
      * @param map
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void sharePrefencesChanged(Map<Integer, String> map) {
+    public void sharePrefencesChanged(Multimap<Integer, Object> map) {
 
-        Set<Map.Entry<Integer, String>> set = map.entrySet();
+//        原来是直接使用的Map
+//        Set<Map.Entry<Integer, String>> set = map.entrySet();
+//        Iterator iterator = set.iterator();
+//        while (iterator.hasNext()) {
+//            Map.Entry<Integer, String> entry = (Map.Entry<Integer, String>) iterator.next();
+//            Logger.d("EventBus消息订阅者收到消息，数值上限调整为：" + entry.getKey());
+//            Logger.d("EventBus消息订阅者收到消息，运算符调整为：" + entry.getValue());
+//            NUMBER_UPPER = entry.getKey();
+//            String string = entry.getValue();
+//            OPERATOR_SYMBOLS = Arrays.asList(string.split(","));
+//        }
+
+        Set<Integer> set = map.keySet();
         Iterator iterator = set.iterator();
         while (iterator.hasNext()) {
-            Map.Entry<Integer, String> entry = (Map.Entry<Integer, String>) iterator.next();
-            Logger.d("EventBus消息订阅者收到消息，数值上限调整为：" + entry.getKey());
-            Logger.d("EventBus消息订阅者收到消息，运算符调整为：" + entry.getValue());
-            NUMBER_UPPER = entry.getKey();
-            String string = entry.getValue();
-            OPERATOR_SYMBOLS = Arrays.asList(string.split(","));
+
+
+            Integer numUpper = (Integer) iterator.next();
+
+            Collection<Object> collection = map.get(numUpper);
+            Object[] o = collection.toArray();
+            String symbols = (String) o[0];
+            Integer numUpperType = (Integer) o[1];
+
+            Logger.d("EventBus消息订阅者收到消息，数值上限调整为：" + numUpper);
+            Logger.d("EventBus消息订阅者收到消息，运算符调整为：" + symbols);
+            Logger.d("EventBus消息订阅者收到消息，数值上限类型为：" + numUpperType);
+
+            NUMBER_UPPER = numUpper;
+            OPERATOR_SYMBOLS = Arrays.asList(symbols.split(","));
+            numberUpperType = numUpperType;
         }
 
     }

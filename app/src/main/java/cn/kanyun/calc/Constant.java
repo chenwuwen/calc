@@ -17,4 +17,11 @@ public class Constant {
      * sharedprefemces文件名
      */
     public static String SHARED_PREFENCES_NAME = "calc";
+
+    /**
+     * 数值上限类型
+     * 以参与运算的数值为准
+     * 以运算结果的数值为准
+     */
+    public static String KEY_NUMBER_UPPER_TYPE = "key_number_upper_type";
 }

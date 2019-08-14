@@ -1,33 +1,22 @@
 package cn.kanyun.calc.fragment;
 
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.SavedStateVMFactory;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.orhanobut.logger.Logger;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.SavedStateVMFactory;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import cn.kanyun.calc.R;
+import cn.kanyun.calc.Type;
 import cn.kanyun.calc.databinding.QuestionFragmentBinding;
 import cn.kanyun.calc.viewmodel.ScoreViewModel;
 import es.dmoral.toasty.Toasty;
@@ -66,7 +55,12 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
             mViewModel.getCurrentScore().setValue(0);
         }
 //        第一次进入页面时生成计算式子,否则会显示成 0+0
-        mViewModel.generator();
+        if (mViewModel.numberUpperType == Type.MEMBER_GUIDE.number) {
+            mViewModel.generator();
+        } else {
+            mViewModel.generator1();
+        }
+
         questionFragmentBinding = DataBindingUtil.inflate(inflater, R.layout.question_fragment, container, false);
         questionFragmentBinding.setData(mViewModel);
         questionFragmentBinding.setLifecycleOwner(requireActivity());

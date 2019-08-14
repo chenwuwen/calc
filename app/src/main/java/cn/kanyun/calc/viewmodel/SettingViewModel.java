@@ -5,6 +5,7 @@ import android.content.Context;
 import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,8 @@ import androidx.lifecycle.SavedStateHandle;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.google.common.base.Joiner;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -30,6 +33,7 @@ import java.util.Random;
 
 import cn.kanyun.calc.Constant;
 import cn.kanyun.calc.R;
+import cn.kanyun.calc.Type;
 import es.dmoral.toasty.Toasty;
 
 /**
@@ -56,9 +60,11 @@ public class SettingViewModel extends AndroidViewModel {
 //        如果不包含数值上限,则是第一次进入
         if (!savedStateHandle.contains(Constant.KEY_NUMBER_UPPER_LIMIT)) {
             SPUtils sp = SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME);
-            savedStateHandle.set(Constant.KEY_NUMBER_UPPER_LIMIT, sp.getInt(Constant.KEY_NUMBER_UPPER_LIMIT, 20));
+            savedStateHandle.set(Constant.KEY_NUMBER_UPPER_LIMIT, sp.getInt(Constant.KEY_NUMBER_UPPER_LIMIT, 10));
 //            初始化时,将加减运算符默认勾选
             savedStateHandle.set(Constant.KEY_OPERATOR_SYMBOLS, application.getString(R.string.set_operator_symbol_add) + "," + application.getString(R.string.set_operator_symbol_reduce));
+//            数值上限类型(默认是1)
+            savedStateHandle.set(Constant.KEY_NUMBER_UPPER_TYPE, sp.getInt(Constant.KEY_NUMBER_UPPER_TYPE, Type.MEMBER_GUIDE.number));
 
         }
         this.handle = savedStateHandle;
@@ -71,6 +77,15 @@ public class SettingViewModel extends AndroidViewModel {
      */
     public MutableLiveData<Integer> getNumberUpperLimit() {
         return handle.getLiveData(Constant.KEY_NUMBER_UPPER_LIMIT);
+    }
+
+    /**
+     * 获取数值上限
+     *
+     * @return
+     */
+    public MutableLiveData<Integer> getNumberUpperType() {
+        return handle.getLiveData(Constant.KEY_NUMBER_UPPER_TYPE);
     }
 
     /**
@@ -137,6 +152,19 @@ public class SettingViewModel extends AndroidViewModel {
         getNumberUpperLimit().setValue(number);
     }
 
+    /**
+     * 数值上限类型改变
+     * @param radioGroup
+     * @param checkedId
+     */
+    public void typeChange(RadioGroup radioGroup, int checkedId) {
+        if (checkedId == R.id.join_operation_type_radio) {
+            getNumberUpperType().setValue(Type.MEMBER_GUIDE.number);
+        }else {
+            getNumberUpperType().setValue(Type.RESULT_GUIDE.number);
+        }
+    }
+
 
     /**
      * 保存设置，持久化到SharedPrefences
@@ -144,14 +172,20 @@ public class SettingViewModel extends AndroidViewModel {
     public void saveSetting() {
         int numberUpper = getNumberUpperLimit().getValue();
         String symbols = getCheckedSymbols().getValue();
+        int numberUpperType = getNumberUpperType().getValue();
         if (numberUpper < 1 || StringUtils.isEmpty(symbols)) {
             Toasty.error(context, "请正确设置选项", Toast.LENGTH_LONG).show();
             return;
         }
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_NUMBER_UPPER_LIMIT, numberUpper);
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_OPERATOR_SYMBOLS, symbols);
-        Map<Integer, String> param = new HashMap<>(1);
+        SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_NUMBER_UPPER_TYPE, numberUpperType);
+
+//        这里使用Guava的Multimap,一个key对应多个value
+        Multimap<Integer, Object> param = LinkedListMultimap.create();
         param.put(numberUpper, symbols);
+        param.put(numberUpper, numberUpperType);
+
         EventBus.getDefault().post(param);
         Toasty.success(context, "保存配置成功！", Toast.LENGTH_SHORT).show();
     }
