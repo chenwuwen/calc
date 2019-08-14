@@ -6,7 +6,7 @@ android {
     buildToolsVersion "29.0.0"
     defaultConfig {
         applicationId "cn.kanyun.calc"
-        minSdkVersion 23
+        minSdkVersion 26
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -74,6 +74,8 @@ dependencies {
 //    腾讯开源的UI框架
     implementation 'com.qmuiteam:qmui:1.4.0'
     implementation 'com.qmuiteam:arch:0.6.1'
+    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'com.orhanobut:logger:2.2.0'
 
 
 

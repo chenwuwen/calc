@@ -18,6 +18,8 @@ import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.google.common.base.Joiner;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,9 +41,6 @@ public class SettingViewModel extends AndroidViewModel {
     SavedStateHandle handle;
 
     Context context;
-
-
-
 
 
     /**
@@ -129,7 +128,12 @@ public class SettingViewModel extends AndroidViewModel {
      * @param count  改变的字符个数
      */
     public void numberChange(CharSequence val, int start, int before, int count) {
-        int number = Integer.parseInt(val.toString());
+        int number = 10;
+        try {
+            number = Integer.parseInt(val.toString());
+        } catch (Exception e) {
+
+        }
         getNumberUpperLimit().setValue(number);
     }
 
@@ -140,8 +144,15 @@ public class SettingViewModel extends AndroidViewModel {
     public void saveSetting() {
         int numberUpper = getNumberUpperLimit().getValue();
         String symbols = getCheckedSymbols().getValue();
+        if (numberUpper < 1 || StringUtils.isEmpty(symbols)) {
+            Toasty.error(context, "请正确设置选项", Toast.LENGTH_LONG).show();
+            return;
+        }
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_NUMBER_UPPER_LIMIT, numberUpper);
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_OPERATOR_SYMBOLS, symbols);
+        Map<Integer, String> param = new HashMap<>(1);
+        param.put(numberUpper, symbols);
+        EventBus.getDefault().post(param);
         Toasty.success(context, "保存配置成功！", Toast.LENGTH_SHORT).show();
     }
 

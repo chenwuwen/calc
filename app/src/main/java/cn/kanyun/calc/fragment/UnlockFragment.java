@@ -1,5 +1,6 @@
 package cn.kanyun.calc.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -42,7 +43,8 @@ public class UnlockFragment extends Fragment {
             unlockPopup.setOutSideDismiss(true);
 //                设置是否允许back键dismiss
             unlockPopup.setBackPressEnable(true);
-            unlockPopup.setPopupGravity(Gravity.BOTTOM);
+//            设置BasePopup背景颜色，默认颜色 #8f000000 如果传值为0，则无背景,也可以传Drawable
+            unlockPopup.setBackgroundColor(0);
 //            显示Popup
             unlockPopup.showPopupWindow();
         });

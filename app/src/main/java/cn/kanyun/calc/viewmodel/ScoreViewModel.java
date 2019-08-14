@@ -11,14 +11,23 @@ import androidx.lifecycle.SavedStateHandle;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
+import com.google.common.math.IntMath;
+import com.google.common.primitives.Ints;
+import com.orhanobut.logger.Logger;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import cn.kanyun.calc.Constant;
 import cn.kanyun.calc.R;
@@ -74,11 +83,11 @@ public class ScoreViewModel extends AndroidViewModel {
      * 解锁条件
      */
     private static Map<Integer, Integer> unLockScore = new HashMap() {{
-        put(5, R.drawable.unlock_1);
-        put(10, R.drawable.unlock_2);
-        put(15, R.drawable.unlock_3);
-        put(20, R.drawable.unlock_4);
-        put(25, R.drawable.unlock_5);
+        put(2, R.drawable.unlock_1);
+        put(3, R.drawable.unlock_2);
+        put(5, R.drawable.unlock_3);
+        put(6, R.drawable.unlock_4);
+        put(7, R.drawable.unlock_5);
     }};
 
     /**
@@ -94,6 +103,9 @@ public class ScoreViewModel extends AndroidViewModel {
      */
     public ScoreViewModel(@NonNull Application application, SavedStateHandle savedStateHandle) {
         super(application);
+
+//        消费者需要注册EventBus,发送者不需要注册
+        EventBus.getDefault().register(this);
 //        初始化Context,构造函数里的Application,是因为该ViewModel是继承的AndroidViewModel而不是继承ViewModel
         this.context = application;
 //        如果不包含最高分数,则是第一次进入
@@ -113,13 +125,13 @@ public class ScoreViewModel extends AndroidViewModel {
                 OPERATOR_SYMBOLS.add(application.getString(R.string.set_operator_symbol_reduce));
             } else {
                 OPERATOR_SYMBOLS = new ArrayList<>(Arrays.asList(symbols.split(",")));
-//                如果包含除法符号,将其替换成 /
-                if (OPERATOR_SYMBOLS.contains(application.getString(R.string.set_operator_symbol_division))) {
-                    Collections.replaceAll(OPERATOR_SYMBOLS, application.getString(R.string.set_operator_symbol_division), "/");
-                }
+//                如果包含除法符号,将其替换成 / (之所以想着替换是因为想把符号作为运算符来操作,不过想了想没必要,可以直接使用工具类来进行运算)
+//                if (OPERATOR_SYMBOLS.contains(application.getString(R.string.set_operator_symbol_division))) {
+//                    Collections.replaceAll(OPERATOR_SYMBOLS, application.getString(R.string.set_operator_symbol_division), "/");
+//                }
             }
 //            数值上限
-            NUMBER_UPPER = sp.getInt(Constant.KEY_NUMBER_UPPER_LIMIT, 20);
+            NUMBER_UPPER = sp.getInt(Constant.KEY_NUMBER_UPPER_LIMIT, 10);
 
         }
         this.handle = savedStateHandle;
@@ -189,13 +201,72 @@ public class ScoreViewModel extends AndroidViewModel {
     }
 
     /**
+     * 生成运算符
+     *
+     * @return
+     */
+    public String generatorSymbol() {
+        Random symbolRandom = new Random();
+        int k = symbolRandom.nextInt(OPERATOR_SYMBOLS.size());
+        String symbol = OPERATOR_SYMBOLS.get(k);
+        return symbol;
+    }
+
+    /**
      * 生成算式
+     * 这个方法生成的是参与运算的数字上限
      */
     public void generator() {
-        Random random = new Random();
+//        生成运算符
+        String symbol = generatorSymbol();
+//        生成左右两边的数字
+        Random numberRandom = new Random();
         int x, y;
-        x = random.nextInt(NUMBER_UPPER) + 1;
-        y = random.nextInt(NUMBER_UPPER) + 1;
+        x = numberRandom.nextInt(NUMBER_UPPER) + 1;
+        y = numberRandom.nextInt(NUMBER_UPPER) + 1;
+
+        if (symbol.equals(context.getString(R.string.set_operator_symbol_add))) {
+//            加法
+            getOperatorSymbol().setValue(context.getString(R.string.set_operator_symbol_add));
+//          该方法返回的是整数a和整数b的和，如果和不超过整数范围，就返回这个值[guava工具类实现]
+            getAnswer().setValue(IntMath.checkedAdd(x, y));
+        } else if (symbol.equals(context.getString(R.string.set_operator_symbol_reduce))) {
+//            减法
+            getOperatorSymbol().setValue(context.getString(R.string.set_operator_symbol_reduce));
+//                如果x<y则交换数值
+            if (Ints.compare(x, y) == -1) {
+                x = x ^ y;
+                y = x ^ y;
+                x = x ^ y;
+            }
+            getAnswer().setValue(IntMath.checkedSubtract(x, y));
+        } else if (symbol.equals(context.getString(R.string.set_operator_symbol_multiplication))) {
+//            乘法
+            getOperatorSymbol().setValue(context.getString(R.string.set_operator_symbol_multiplication));
+            getAnswer().setValue(IntMath.checkedMultiply(x, y));
+
+        } else {
+//            除法
+            getOperatorSymbol().setValue(context.getString(R.string.set_operator_symbol_division));
+//          如果生成的是 除法 运算符,那么把x 作为结果， xy的乘积当做左边的数赋值给x(被除数) ,y 作为除数
+            getAnswer().setValue(x);
+            x = IntMath.checkedMultiply(x, y);
+        }
+
+//        设置左右两边的数值
+        getLeftNumber().setValue(x);
+        getRightNumber().setValue(y);
+    }
+
+    /**
+     * 生成运算表达式
+     * 这个方法生成的是运算结果的上限
+     */
+    public void generator1() {
+        Random numberRandom = new Random();
+        int x, y;
+        x = numberRandom.nextInt(NUMBER_UPPER) + 1;
+        y = numberRandom.nextInt(NUMBER_UPPER) + 1;
         if (x % 2 == 0) {
             getOperatorSymbol().setValue("+");
             if (x > y) {
@@ -219,7 +290,6 @@ public class ScoreViewModel extends AndroidViewModel {
                 getRightNumber().setValue(y - x);
             }
         }
-
     }
 
     /**
@@ -255,5 +325,35 @@ public class ScoreViewModel extends AndroidViewModel {
 
 //        生成下一个计算式
         generator();
+    }
+
+    /**
+     * EventBus取消注册
+     */
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        EventBus.getDefault().unregister(this);
+    }
+
+    /**
+     * 接收shareprefences文件变化事件
+     *
+     * @param map
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void sharePrefencesChanged(Map<Integer, String> map) {
+
+        Set<Map.Entry<Integer, String>> set = map.entrySet();
+        Iterator iterator = set.iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, String> entry = (Map.Entry<Integer, String>) iterator.next();
+            Logger.d("EventBus消息订阅者收到消息，数值上限调整为：" + entry.getKey());
+            Logger.d("EventBus消息订阅者收到消息，运算符调整为：" + entry.getValue());
+            NUMBER_UPPER = entry.getKey();
+            String string = entry.getValue();
+            OPERATOR_SYMBOLS = Arrays.asList(string.split(","));
+        }
+
     }
 }

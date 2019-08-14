@@ -17,6 +17,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import cn.kanyun.calc.R;
 import cn.kanyun.calc.databinding.QuestionFragmentBinding;
 import cn.kanyun.calc.viewmodel.ScoreViewModel;
@@ -36,6 +46,12 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
 
     public static QuestionFragment newInstance() {
         return new QuestionFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -153,4 +169,11 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
             questionFragmentBinding.answer.setText(getString(R.string.input_result, ""));
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+
 }

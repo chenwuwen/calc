@@ -2,6 +2,8 @@ package cn.kanyun.calc;
 
 import android.app.Application;
 
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.Logger;
 import com.qmuiteam.qmui.arch.QMUISwipeBackActivityManager;
 
 import es.dmoral.toasty.Toasty;
@@ -26,5 +28,8 @@ public class MyApplication extends Application {
                 .setTextSize(15)
                 .allowQueue(true) //允许Toast排队
                 .apply();
+
+        //        初始化Logger
+        Logger.addLogAdapter(new AndroidLogAdapter());
     }
 }
