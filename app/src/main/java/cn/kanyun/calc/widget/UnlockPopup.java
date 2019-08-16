@@ -29,15 +29,21 @@ public class UnlockPopup extends BasePopupWindow {
             Activity activity = (Activity) context;
             View view = activity.findViewById(R.id.reward);
             NavController navController = Navigation.findNavController(view);
+            navController.popBackStack();
             navController.navigate(R.id.action_unlockFragment_to_mainFragment);
+//            关闭弹窗,否则页面跳转后,popup还存在
+            dismiss();
         });
 //        继续挑战
         conditionButton.setOnClickListener(v -> {
+
 //            由于此处的view是popup的view,所以使用它不能找到NavController
             Activity activity = (Activity) context;
             View view = activity.findViewById(R.id.reward);
             NavController navController = Navigation.findNavController(view);
             navController.navigate(R.id.action_unlockFragment_to_questionFragment);
+//            关闭弹窗,否则页面跳转后,popup还存在
+            dismiss();
         });
     }
 

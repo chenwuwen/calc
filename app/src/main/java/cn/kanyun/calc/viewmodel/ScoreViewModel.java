@@ -2,6 +2,7 @@ package cn.kanyun.calc.viewmodel;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -94,13 +95,7 @@ public class ScoreViewModel extends AndroidViewModel {
     /**
      * 解锁条件
      */
-    private static Map<Integer, Integer> unLockScore = new HashMap() {{
-        put(2, R.drawable.unlock_1);
-        put(3, R.drawable.unlock_2);
-        put(5, R.drawable.unlock_3);
-        put(6, R.drawable.unlock_4);
-        put(7, R.drawable.unlock_5);
-    }};
+    private static Map<Integer, Integer> unLockScore ;
 
     /**
      * 解锁标志
@@ -148,7 +143,14 @@ public class ScoreViewModel extends AndroidViewModel {
             numberUpperType = sp.getInt(Constant.KEY_NUMBER_UPPER_TYPE, Type.MEMBER_GUIDE.number);
 
         }
+        initReward();
         this.handle = savedStateHandle;
+    }
+
+    private void initReward() {
+        AssetManager assetManager = context.getAssets();
+        assetManager.
+
     }
 
     /**
