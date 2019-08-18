@@ -65,7 +65,10 @@ public class SettingViewModel extends AndroidViewModel {
             savedStateHandle.set(Constant.KEY_OPERATOR_SYMBOLS, application.getString(R.string.set_operator_symbol_add) + "," + application.getString(R.string.set_operator_symbol_reduce));
 //            数值上限类型(默认是1)
             savedStateHandle.set(Constant.KEY_NUMBER_UPPER_TYPE, sp.getInt(Constant.KEY_NUMBER_UPPER_TYPE, Type.MEMBER_GUIDE.number));
-
+//            背景音乐默认开启
+            savedStateHandle.set(Constant.KEY_BACKGROUND_MUSIC, sp.getBoolean(Constant.KEY_BACKGROUND_MUSIC, true));
+//            背景音效默认开启
+            savedStateHandle.set(Constant.KEY_BACKGROUND_SOUND, sp.getBoolean(Constant.KEY_BACKGROUND_SOUND, true));
         }
         this.handle = savedStateHandle;
     }
@@ -96,6 +99,43 @@ public class SettingViewModel extends AndroidViewModel {
     public MutableLiveData<String> getCheckedSymbols() {
         return handle.getLiveData(Constant.KEY_OPERATOR_SYMBOLS);
     }
+
+    /**
+     * 获取背景音乐状态
+     *
+     * @return
+     */
+    public MutableLiveData<Boolean> getBackGroundMusic() {
+        return handle.getLiveData(Constant.KEY_BACKGROUND_MUSIC);
+    }
+
+    /**
+     * 设置背景音乐状态
+     *
+     * @return
+     */
+    public void setBackGroundMusic() {
+        handle.getLiveData(Constant.KEY_BACKGROUND_MUSIC).setValue(false);
+    }
+
+    /**
+     * 获取背景音效状态
+     *
+     * @return
+     */
+    public MutableLiveData<Boolean> getBackGroundSound() {
+        return handle.getLiveData(Constant.KEY_BACKGROUND_SOUND);
+    }
+
+    /**
+     * 设置背景音效状态
+     *
+     * @return
+     */
+    public void setBackGroundSound() {
+        handle.getLiveData(Constant.KEY_BACKGROUND_SOUND).setValue(false);
+    }
+
 
     /**
      * 判断是否是勾选状态
@@ -154,13 +194,14 @@ public class SettingViewModel extends AndroidViewModel {
 
     /**
      * 数值上限类型改变
+     *
      * @param radioGroup
      * @param checkedId
      */
     public void typeChange(RadioGroup radioGroup, int checkedId) {
         if (checkedId == R.id.join_operation_type_radio) {
             getNumberUpperType().setValue(Type.MEMBER_GUIDE.number);
-        }else {
+        } else {
             getNumberUpperType().setValue(Type.RESULT_GUIDE.number);
         }
     }
@@ -177,9 +218,15 @@ public class SettingViewModel extends AndroidViewModel {
             Toasty.error(context, "请正确设置选项", Toast.LENGTH_LONG).show();
             return;
         }
+
+        boolean soundState = getBackGroundSound().getValue();
+        boolean musicState = getBackGroundMusic().getValue();
+
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_NUMBER_UPPER_LIMIT, numberUpper);
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_OPERATOR_SYMBOLS, symbols);
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_NUMBER_UPPER_TYPE, numberUpperType);
+        SPUtils.getInstance(Constant.KEY_BACKGROUND_MUSIC).put(Constant.KEY_BACKGROUND_MUSIC, musicState);
+        SPUtils.getInstance(Constant.KEY_BACKGROUND_SOUND).put(Constant.KEY_BACKGROUND_SOUND, soundState);
 
 //        这里使用Guava的Multimap,一个key对应多个value
         Multimap<Integer, Object> param = LinkedListMultimap.create();

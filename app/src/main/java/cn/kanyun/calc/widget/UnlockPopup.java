@@ -11,7 +11,10 @@ import android.widget.Button;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.blankj.utilcode.util.FragmentUtils;
+
 import cn.kanyun.calc.R;
+import cn.kanyun.calc.fragment.UnlockFragment;
 import razerdp.basepopup.BasePopupWindow;
 
 public class UnlockPopup extends BasePopupWindow {
@@ -26,11 +29,13 @@ public class UnlockPopup extends BasePopupWindow {
 //        返回
         returnButton.setOnClickListener(v -> {
 //            由于此处的view是popup的view,所以使用它不能找到NavController
-            Activity activity = (Activity) context;
-            View view = activity.findViewById(R.id.reward);
-            NavController navController = Navigation.findNavController(view);
-            navController.popBackStack();
-            navController.navigate(R.id.action_unlockFragment_to_mainFragment);
+//            Activity activity = (Activity) context;
+//            View view = activity.findViewById(R.id.reward);
+//            NavController navController = Navigation.findNavController(view);
+//            navController.popBackStack();
+//            navController.navigate(R.id.action_unlockFragment_to_mainFragment);
+
+            FragmentUtils.remove(UnlockFragment.newInstance());
 //            关闭弹窗,否则页面跳转后,popup还存在
             dismiss();
         });
@@ -38,10 +43,13 @@ public class UnlockPopup extends BasePopupWindow {
         conditionButton.setOnClickListener(v -> {
 
 //            由于此处的view是popup的view,所以使用它不能找到NavController
-            Activity activity = (Activity) context;
-            View view = activity.findViewById(R.id.reward);
-            NavController navController = Navigation.findNavController(view);
-            navController.navigate(R.id.action_unlockFragment_to_questionFragment);
+//            Activity activity = (Activity) context;
+//            View view = activity.findViewById(R.id.reward);
+//            NavController navController = Navigation.findNavController(view);
+//            navController.navigate(R.id.action_unlockFragment_to_questionFragment);
+
+            FragmentUtils.remove(UnlockFragment.newInstance());
+
 //            关闭弹窗,否则页面跳转后,popup还存在
             dismiss();
         });

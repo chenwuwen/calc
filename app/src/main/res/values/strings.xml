@@ -37,6 +37,9 @@
     <string name="number_upper_type">数值上限类型</string>
     <string name="join_operation_type">以参与运算的数值为准</string>
     <string name="result_operation_type">以运算结果的数值为准(只有加减运算)</string>
+    <string name="reward_main">我的</string>
+    <string name="background_music">背景音乐：</string>
+    <string name="background_sound">背景音效</string>
 
 
 </resources>

@@ -18,6 +18,7 @@ import androidx.navigation.Navigation;
 import cn.kanyun.calc.R;
 import cn.kanyun.calc.Type;
 import cn.kanyun.calc.databinding.QuestionFragmentBinding;
+import cn.kanyun.calc.service.SoundIntentService;
 import cn.kanyun.calc.viewmodel.ScoreViewModel;
 import es.dmoral.toasty.Toasty;
 
@@ -89,6 +90,8 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+//        按键音效
+        SoundIntentService.startActionNormalKey(v.getContext());
         boolean cancelFlg = false;
         switch (v.getId()) {
             case R.id.button0:
@@ -139,16 +142,18 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
                 if (Integer.parseInt(sb.toString()) == mViewModel.getAnswer().getValue()) {
 //                    回答正确
                     mViewModel.answerCorrect();
-
+//                    音效
+                    SoundIntentService.startActionAnswerResult(v.getContext(), true);
 //                    是否到达解锁分数
                     if (mViewModel.unLock) {
                         mViewModel.unLock = false;
-
+//                        解锁碎片音效
+                        SoundIntentService.startActionAnswerReward(v.getContext(),1);
                         NavController controller = Navigation.findNavController(v);
                         controller.navigate(R.id.action_questionFragment_to_unlockFragment);
                     }
                 } else {
-
+                    SoundIntentService.startActionAnswerResult(v.getContext(), false);
 //                    回答失败,跳转到失败页面
                     NavController controller = Navigation.findNavController(v);
                     controller.navigate(R.id.action_questionFragment_to_loseFragment, bundle);

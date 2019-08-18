@@ -149,7 +149,7 @@ public class ScoreViewModel extends AndroidViewModel {
 
     private void initReward() {
         AssetManager assetManager = context.getAssets();
-        assetManager.
+//        assetManager.
 
     }
 

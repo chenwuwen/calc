@@ -24,4 +24,14 @@ public class Constant {
      * 以运算结果的数值为准
      */
     public static String KEY_NUMBER_UPPER_TYPE = "key_number_upper_type";
+
+    /**
+     * 背景音乐
+     */
+    public static String KEY_BACKGROUND_MUSIC = "key_background_music";
+
+    /**
+     * 背景音效
+     */
+    public static String KEY_BACKGROUND_SOUND = "key_background_sound";
 }

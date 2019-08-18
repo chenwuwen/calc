@@ -66,6 +66,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0-alpha01'
+
+//    https://blog.csdn.net/qq_38998213/article/details/82181309
     implementation 'com.blankj:utilcode:1.25.7'
     implementation group: 'com.google.guava', name: 'guava', version: '28.0-android'
 //    带颜色的吐司
@@ -77,6 +79,8 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.orhanobut:logger:2.2.0'
 
+//    switchbutton 漂亮的开关按钮组件
+    implementation 'com.kyleduo.switchbutton:library:2.0.0'
 
 
 }

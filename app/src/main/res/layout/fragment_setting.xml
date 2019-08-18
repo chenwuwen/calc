@@ -22,17 +22,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.4" />
+            app:layout_constraintGuide_percent="0.35" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline26"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5" />
+            app:layout_constraintGuide_percent="0.45" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline25"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.7" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline34"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -71,12 +78,13 @@
             android:id="@+id/textView13"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="@string/operator_symbol"
             app:layout_constraintBottom_toTopOf="@+id/guideline25"
             app:layout_constraintEnd_toStartOf="@+id/checkBox"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView12"
+            app:layout_constraintTop_toTopOf="@+id/guideline21"
             app:layout_constraintVertical_bias="0.669" />
 
         <!--checked后面的表达式不能添加()-> -->
@@ -141,12 +149,13 @@
             android:id="@+id/setting_save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:onClick="@{()->setData.saveSetting()}"
             android:text="@string/setting_save_btn_str"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline25" />
+            app:layout_constraintTop_toTopOf="@+id/guideline34" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline21"
@@ -168,9 +177,9 @@
 
         <RadioGroup
             android:id="@+id/radioGroup"
-            android:onCheckedChanged="@{(radioGroup,checkId)->setData.typeChange(radioGroup,checkId)}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onCheckedChanged="@{(radioGroup,checkId)->setData.typeChange(radioGroup,checkId)}"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="@+id/textView9"
             app:layout_constraintEnd_toEndOf="parent"
@@ -181,8 +190,8 @@
             <RadioButton
                 android:id="@+id/join_operation_type_radio"
                 android:layout_width="wrap_content"
-                android:checked="@{setData.numberUpperType == type.MEMBER_GUIDE.number?true:false}"
                 android:layout_height="wrap_content"
+                android:checked="@{setData.numberUpperType == type.MEMBER_GUIDE.number?true:false}"
                 android:text="@string/join_operation_type" />
 
             <RadioButton
@@ -193,6 +202,62 @@
                 android:text="@string/result_operation_type" />
 
         </RadioGroup>
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/background_music"
+            app:layout_constraintBottom_toTopOf="@+id/guideline34"
+            app:layout_constraintEnd_toStartOf="@+id/music_switch"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline25" />
+
+        <com.kyleduo.switchbutton.SwitchButton
+            android:id="@+id/music_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:kswTintColor="#16A560"
+            app:kswBackColor="#650796F7"
+            app:kswTextOff="OFF"
+            app:kswTextOn="ON"
+            android:textColor="@android:color/darker_gray"
+            app:kswTextExtra="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView14"
+            app:layout_constraintEnd_toStartOf="@+id/textView15"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView14"
+            app:layout_constraintTop_toTopOf="@+id/textView14" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/background_sound"
+            app:layout_constraintBottom_toBottomOf="@+id/music_switch"
+            app:layout_constraintEnd_toStartOf="@+id/sound_switch"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/music_switch"
+            app:layout_constraintTop_toTopOf="@+id/music_switch" />
+
+        <com.kyleduo.switchbutton.SwitchButton
+            android:id="@+id/sound_switch"
+            app:kswTintColor="#16A560"
+            app:kswBackColor="#650796F7"
+            app:kswTextOff="OFF"
+            app:kswTextOn="ON"
+            android:textColor="@android:color/darker_gray"
+            app:kswTextExtra="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/textView15"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView15"
+            app:layout_constraintTop_toTopOf="@+id/textView15" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

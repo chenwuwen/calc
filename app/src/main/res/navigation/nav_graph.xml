@@ -52,6 +52,9 @@
         <action
             android:id="@+id/action_mainFragment_to_settingFragment"
             app:destination="@id/settingFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_meFragment"
+            app:destination="@id/meFragment" />
     </fragment>
     <action android:id="@+id/action_global_mainFragment" app:destination="@id/mainFragment" />
     <fragment
@@ -63,4 +66,9 @@
             android:id="@+id/action_settingFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/meFragment"
+        android:name="cn.kanyun.calc.fragment.MeFragment"
+        android:label="me_fragment"
+        tools:layout="@layout/me_fragment" />
 </navigation>
