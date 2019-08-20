@@ -139,7 +139,16 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
                 bundle.putInt("currentScore", mViewModel.getCurrentScore().getValue());
                 bundle.putInt("highScore", mViewModel.getHighScore().getValue());
 
-                if (Integer.parseInt(sb.toString()) == mViewModel.getAnswer().getValue()) {
+                int userAnswer ;
+                try {
+                    userAnswer = Integer.parseInt(sb.toString());
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    Toasty.error(v.getContext(), "请输入合法的值！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (userAnswer == mViewModel.getAnswer().getValue()) {
 //                    回答正确
                     mViewModel.answerCorrect();
 //                    音效
@@ -148,7 +157,7 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
                     if (mViewModel.unLock) {
                         mViewModel.unLock = false;
 //                        解锁碎片音效
-                        SoundIntentService.startActionAnswerReward(v.getContext(),1);
+                        SoundIntentService.startActionAnswerReward(v.getContext(), 1);
                         NavController controller = Navigation.findNavController(v);
                         controller.navigate(R.id.action_questionFragment_to_unlockFragment);
                     }

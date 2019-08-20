@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.text.Editable;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -114,8 +115,12 @@ public class SettingViewModel extends AndroidViewModel {
      *
      * @return
      */
-    public void setBackGroundMusic() {
-        handle.getLiveData(Constant.KEY_BACKGROUND_MUSIC).setValue(false);
+    public void setBackGroundMusic(CompoundButton compoundButton, boolean isChecked) {
+        if (isChecked) {
+            handle.getLiveData(Constant.KEY_BACKGROUND_MUSIC).setValue(true);
+        } else {
+            handle.getLiveData(Constant.KEY_BACKGROUND_MUSIC).setValue(false);
+        }
     }
 
     /**
@@ -132,8 +137,8 @@ public class SettingViewModel extends AndroidViewModel {
      *
      * @return
      */
-    public void setBackGroundSound() {
-        handle.getLiveData(Constant.KEY_BACKGROUND_SOUND).setValue(false);
+    public void setBackGroundSound(CompoundButton compoundButton, boolean isChecked) {
+        handle.getLiveData(Constant.KEY_BACKGROUND_SOUND).setValue(isChecked);
     }
 
 

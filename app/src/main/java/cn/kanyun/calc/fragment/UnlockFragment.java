@@ -1,7 +1,10 @@
 package cn.kanyun.calc.fragment;
 
-import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,11 +12,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.SavedStateVMFactory;
 import androidx.lifecycle.ViewModelProviders;
-
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import cn.kanyun.calc.R;
 import cn.kanyun.calc.databinding.UnlockFragmentBinding;
@@ -36,7 +34,7 @@ public class UnlockFragment extends Fragment {
         scoreViewModel = ViewModelProviders.of(requireActivity(), new SavedStateVMFactory(requireActivity())).get(cn.kanyun.calc.viewmodel.ScoreViewModel.class);
         unlockFragmentBinding.setLifecycleOwner(requireActivity());
         unlockFragmentBinding.setData(scoreViewModel);
-        unlockFragmentBinding.reward.setImageResource(scoreViewModel.getUnlockReward().getValue());
+        unlockFragmentBinding.reward.setImageDrawable(new BitmapDrawable(getResources(), scoreViewModel.getUnlockReward().getValue()));
         unlockFragmentBinding.constraintLayout2.setOnClickListener(v -> {
             UnlockPopup unlockPopup = new UnlockPopup(getContext());
 //            设置是否点击popup外部时dismiss

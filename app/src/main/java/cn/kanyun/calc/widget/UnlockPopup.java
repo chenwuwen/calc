@@ -29,13 +29,13 @@ public class UnlockPopup extends BasePopupWindow {
 //        返回
         returnButton.setOnClickListener(v -> {
 //            由于此处的view是popup的view,所以使用它不能找到NavController
-//            Activity activity = (Activity) context;
-//            View view = activity.findViewById(R.id.reward);
-//            NavController navController = Navigation.findNavController(view);
-//            navController.popBackStack();
+            Activity activity = (Activity) context;
+            View view = activity.findViewById(R.id.reward);
+            NavController navController = Navigation.findNavController(view);
+//            这个方法会直接返回到MainFragment,且按返回键会退出Activity之所以不使用navigate()方法是因为,使用它之后点击返回键将会退回到LoseFragment
+            navController.popBackStack();
 //            navController.navigate(R.id.action_unlockFragment_to_mainFragment);
 
-            FragmentUtils.remove(UnlockFragment.newInstance());
 //            关闭弹窗,否则页面跳转后,popup还存在
             dismiss();
         });
@@ -48,6 +48,7 @@ public class UnlockPopup extends BasePopupWindow {
 //            NavController navController = Navigation.findNavController(view);
 //            navController.navigate(R.id.action_unlockFragment_to_questionFragment);
 
+//            这里之所以不使用NavController.navigate()方法,是因为使用它之后,点击返回键将会再次进入这个界面(这里是UnlockFragment)
             FragmentUtils.remove(UnlockFragment.newInstance());
 
 //            关闭弹窗,否则页面跳转后,popup还存在

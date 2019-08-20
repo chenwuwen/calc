@@ -1,20 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragment.MeFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="Hello"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <variable
+            name="rewardData"
+            type="cn.kanyun.calc.viewmodel.RewardViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragment.MeFragment">
+
+        <!--NestedScrollView替代了ScrollView 解决嵌套问题-->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:scrollbars="none">
+            <!--RecyclerView 存放列表 是ListView/GridView的升级版-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/reward_preview_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

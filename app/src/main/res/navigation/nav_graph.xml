@@ -37,9 +37,6 @@
         <action
             android:id="@+id/action_unlockFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
-        <action
-            android:id="@+id/action_unlockFragment_to_questionFragment"
-            app:destination="@id/questionFragment" />
     </fragment>
     <fragment
         android:id="@+id/mainFragment"

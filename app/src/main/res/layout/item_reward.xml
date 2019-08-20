@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <!--引入这个是为了配合下面的三元表达式配合使用-->
+        <import type="android.view.View"/>
+        <variable
+            name="reward"
+            type="cn.kanyun.calc.Reward" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        android:clickable="@{!reward.lock}"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="300dp"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            android:src="@{reward.drawable}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{reward.name}"
+            app:layout_constraintLeft_toLeftOf="@+id/imageView"
+            app:layout_constraintRight_toRightOf="@+id/imageView"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            tools:text="这是一段描述图片的文字" />
+
+        <!--遮罩层,未解锁的奖励会被遮住,注意三元表达式的写法-->
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="150dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_lock"
+            android:visibility="@{reward.lock? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintLeft_toLeftOf="@+id/imageView"
+            app:layout_constraintRight_toRightOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

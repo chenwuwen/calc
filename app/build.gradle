@@ -82,5 +82,7 @@ dependencies {
 //    switchbutton 漂亮的开关按钮组件
     implementation 'com.kyleduo.switchbutton:library:2.0.0'
 
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.47'
+
 
 }

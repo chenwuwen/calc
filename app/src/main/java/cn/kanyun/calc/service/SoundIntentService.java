@@ -32,7 +32,7 @@ public class SoundIntentService extends IntentService {
     /**
      * 定义SoundPoolUtil
      */
-    private static SoundPoolUtil soundPoolUtil;
+    private static SoundPoolUtil soundPoolUtil ;
 
     // 定义Action
 
@@ -178,6 +178,5 @@ public class SoundIntentService extends IntentService {
 //            错误回答的音效
             soundPoolUtil.play(6);
         }
-//        throw new UnsupportedOperationException("Not yet implemented");
     }
 }

@@ -3,6 +3,7 @@ package cn.kanyun.calc.viewmodel;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 
+import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.google.common.collect.Multimap;
@@ -21,6 +23,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -95,7 +98,7 @@ public class ScoreViewModel extends AndroidViewModel {
     /**
      * 解锁条件
      */
-    private static Map<Integer, Integer> unLockScore ;
+    private static Map<Integer, Bitmap> unLockScore ;
 
     /**
      * 解锁标志
@@ -117,6 +120,7 @@ public class ScoreViewModel extends AndroidViewModel {
         this.context = application;
 //        如果不包含最高分数,则是第一次进入
         if (!savedStateHandle.contains(KEY_HIGH_SCORE)) {
+
             SPUtils sp = SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME);
             savedStateHandle.set(KEY_HIGH_SCORE, sp.getInt(KEY_HIGH_SCORE, 0));
             savedStateHandle.set(KEY_LEFT_NUMBER, 0);
@@ -212,7 +216,7 @@ public class ScoreViewModel extends AndroidViewModel {
      *
      * @return
      */
-    public MutableLiveData<Integer> getUnlockReward() {
+    public MutableLiveData<Bitmap> getUnlockReward() {
         return handle.getLiveData(KEY_UNLOCK_REWARD);
     }
 
