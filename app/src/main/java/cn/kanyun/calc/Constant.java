@@ -3,6 +3,11 @@ package cn.kanyun.calc;
 public class Constant {
 
     /**
+     * 单次答题超时时间
+     */
+    public static final String KEY_TIMEOUT_ANSWER = "key_timeout_answer";
+
+    /**
      * 计算数值上限
      */
     public static String KEY_NUMBER_UPPER_LIMIT = "key_number_upper_limit";

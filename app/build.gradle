@@ -83,6 +83,9 @@ dependencies {
     implementation 'com.kyleduo.switchbutton:library:2.0.0'
 
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.47'
+//    带提示的seekbar https://github.com/woxingxiao/BubbleSeekBar/blob/master/README_zh.md
+    implementation 'com.xw.repo:bubbleseekbar:3.20-lite'
+
 
 
 }

@@ -40,6 +40,7 @@
     <string name="reward_main">我的</string>
     <string name="background_music">背景音乐：</string>
     <string name="background_sound">背景音效</string>
+    <string name="time_info_str">单次答题时长</string>
 
 
 </resources>

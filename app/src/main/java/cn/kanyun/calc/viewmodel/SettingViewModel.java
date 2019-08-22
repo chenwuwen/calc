@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,9 +22,11 @@ import com.blankj.utilcode.util.StringUtils;
 import com.google.common.base.Joiner;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
+import com.xw.repo.BubbleSeekBar;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -70,6 +73,8 @@ public class SettingViewModel extends AndroidViewModel {
             savedStateHandle.set(Constant.KEY_BACKGROUND_MUSIC, sp.getBoolean(Constant.KEY_BACKGROUND_MUSIC, true));
 //            背景音效默认开启
             savedStateHandle.set(Constant.KEY_BACKGROUND_SOUND, sp.getBoolean(Constant.KEY_BACKGROUND_SOUND, true));
+//            做题时长SeekBar,默认10秒
+            savedStateHandle.set(Constant.KEY_TIMEOUT_ANSWER, sp.getInt(Constant.KEY_TIMEOUT_ANSWER, 10));
         }
         this.handle = savedStateHandle;
     }
@@ -84,7 +89,7 @@ public class SettingViewModel extends AndroidViewModel {
     }
 
     /**
-     * 获取数值上限
+     * 获取数值上限类型[以结果为导向还是以参与运算的数为导向]
      *
      * @return
      */
@@ -139,6 +144,22 @@ public class SettingViewModel extends AndroidViewModel {
      */
     public void setBackGroundSound(CompoundButton compoundButton, boolean isChecked) {
         handle.getLiveData(Constant.KEY_BACKGROUND_SOUND).setValue(isChecked);
+    }
+
+    /**
+     * 获取单次答题超时时间
+     * @return
+     */
+    public MutableLiveData<Integer> getTimeout() {
+        return handle.getLiveData(Constant.KEY_TIMEOUT_ANSWER);
+    }
+
+    /**
+     * 设置单次答题超时时间
+     * @return
+     */
+    public void setTimeout(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
+        getTimeout().setValue(progress);
     }
 
 
@@ -226,17 +247,20 @@ public class SettingViewModel extends AndroidViewModel {
 
         boolean soundState = getBackGroundSound().getValue();
         boolean musicState = getBackGroundMusic().getValue();
+        int timeout = getTimeout().getValue();
 
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_NUMBER_UPPER_LIMIT, numberUpper);
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_OPERATOR_SYMBOLS, symbols);
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_NUMBER_UPPER_TYPE, numberUpperType);
         SPUtils.getInstance(Constant.KEY_BACKGROUND_MUSIC).put(Constant.KEY_BACKGROUND_MUSIC, musicState);
         SPUtils.getInstance(Constant.KEY_BACKGROUND_SOUND).put(Constant.KEY_BACKGROUND_SOUND, soundState);
+        SPUtils.getInstance(Constant.KEY_TIMEOUT_ANSWER).put(Constant.KEY_TIMEOUT_ANSWER, timeout);
 
 //        这里使用Guava的Multimap,一个key对应多个value
         Multimap<Integer, Object> param = LinkedListMultimap.create();
         param.put(numberUpper, symbols);
         param.put(numberUpper, numberUpperType);
+        param.put(numberUpper, timeout);
 
         EventBus.getDefault().post(param);
         Toasty.success(context, "保存配置成功！", Toast.LENGTH_SHORT).show();

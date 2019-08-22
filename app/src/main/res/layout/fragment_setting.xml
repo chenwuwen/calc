@@ -22,7 +22,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.35" />
+            app:layout_constraintGuide_percent="0.2" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline35"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.3" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline26"
@@ -62,13 +69,14 @@
             android:id="@+id/editText2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:layout_marginBottom="8dp"
 
+            android:ems="10"
             android:inputType="numberSigned"
             android:onTextChanged="@{(charSequence,start,before,count)->setData.numberChange(charSequence,start,before,count)}"
             android:text="@{String.valueOf(setData.numberUpperLimit)}"
             android:textAlignment="center"
-            app:layout_constraintBottom_toTopOf="@+id/guideline26"
+            app:layout_constraintBottom_toTopOf="@+id/guideline35"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView12"
@@ -220,14 +228,14 @@
             android:id="@+id/music_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:kswTintColor="#16A560"
-            app:kswBackColor="#650796F7"
+            android:checked="@{setData.getBackGroundMusic}"
             android:onCheckedChanged="@{(buttonView,isChecked)->setData.setBackGroundMusic(buttonView,isChecked)}"
+            android:textColor="@android:color/darker_gray"
+            app:kswBackColor="#650796F7"
+            app:kswTextExtra="10dp"
             app:kswTextOff="OFF"
             app:kswTextOn="ON"
-            android:checked="@{setData.getBackGroundMusic}"
-            android:textColor="@android:color/darker_gray"
-            app:kswTextExtra="10dp"
+            app:kswTintColor="#16A560"
             app:layout_constraintBottom_toBottomOf="@+id/textView14"
             app:layout_constraintEnd_toStartOf="@+id/textView15"
             app:layout_constraintHorizontal_bias="0.5"
@@ -247,21 +255,52 @@
 
         <com.kyleduo.switchbutton.SwitchButton
             android:id="@+id/sound_switch"
-            app:kswTintColor="#16A560"
-            app:kswBackColor="#650796F7"
-            app:kswTextOff="OFF"
-            app:kswTextOn="ON"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:checked="@{setData.getBackGroundSound}"
             android:onCheckedChanged="@{(buttonView,isChecked)->setData.setBackGroundSound(buttonView,isChecked)}"
             android:textColor="@android:color/darker_gray"
+            app:kswBackColor="#650796F7"
             app:kswTextExtra="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            app:kswTextOff="OFF"
+            app:kswTextOn="ON"
+            app:kswTintColor="#16A560"
             app:layout_constraintBottom_toBottomOf="@+id/textView15"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView15"
             app:layout_constraintTop_toTopOf="@+id/textView15" />
+
+        <!--这个BubbleSeekBar组件的onProgressChanged貌似无法使用databinding,事件监听放到了fragment中了-->
+        <!--android:onProgressChanged="@{(seekBar,progress,progressFloat,fromUser)->setData.setTimeout(seekBar,progress,progressFloat,fromUser)}"-->
+        <com.xw.repo.BubbleSeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:bsb_bubble_color="#08D1E4"
+            app:bsb_second_track_color="#08D1E4"
+            app:bsb_bubble_text_color="@color/colorPrimaryDark"
+            app:bsb_max="100"
+            android:progress="@{setData.timeout}"
+            app:bsb_min="3"
+            app:bsb_show_section_mark="false"
+            app:layout_constraintBottom_toBottomOf="@+id/textView11"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView11"
+            app:layout_constraintTop_toTopOf="@+id/textView11" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/time_info_str"
+            app:layout_constraintBottom_toTopOf="@+id/guideline26"
+            app:layout_constraintEnd_toStartOf="@+id/seekBar"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline35" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

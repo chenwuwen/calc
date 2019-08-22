@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -94,16 +95,24 @@ public class ScoreViewModel extends AndroidViewModel {
      */
     public int numberUpperType;
 
+    /**
+     * 答题时长上限,默认是10s 当在设置项更改时,会改变此值
+     */
+    public int timeoutAnswer = 10;
+
 
     /**
      * 解锁条件
      */
-    private static Map<Integer, Bitmap> unLockScore ;
+    private static Map<Integer, Bitmap> unLockScore = new HashMap(){{
+        put(100, null);
+    }};
 
     /**
      * 解锁标志
      */
     public boolean unLock = false;
+
 
     /**
      * 构造函数的参数,添加了savedStateHandle,所以不再需要在ViewModel类中定义 MutableLiveData类型的字段了
@@ -392,14 +401,17 @@ public class ScoreViewModel extends AndroidViewModel {
             Object[] o = collection.toArray();
             String symbols = (String) o[0];
             Integer numUpperType = (Integer) o[1];
+            Integer timeout = (Integer) o[2];
 
             Logger.d("EventBus消息订阅者收到消息，数值上限调整为：" + numUpper);
             Logger.d("EventBus消息订阅者收到消息，运算符调整为：" + symbols);
             Logger.d("EventBus消息订阅者收到消息，数值上限类型为：" + numUpperType);
+            Logger.d("EventBus消息订阅者收到消息，答题时长上限为：" + timeout);
 
             NUMBER_UPPER = numUpper;
             OPERATOR_SYMBOLS = Arrays.asList(symbols.split(","));
             numberUpperType = numUpperType;
+            timeoutAnswer = timeout;
         }
 
     }

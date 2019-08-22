@@ -12,6 +12,8 @@ import androidx.lifecycle.SavedStateVMFactory;
 import androidx.lifecycle.ViewModelProviders;
 
 
+import com.xw.repo.BubbleSeekBar;
+
 import org.greenrobot.eventbus.EventBus;
 
 import cn.kanyun.calc.R;
@@ -38,6 +40,24 @@ public class SettingFragment extends Fragment {
         settingBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_setting, container, false);
         settingBinding.setSetData(settingViewModel);
         settingBinding.setLifecycleOwner(this);
+
+
+        settingBinding.seekBar.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListener() {
+            @Override
+            public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
+                settingViewModel.setTimeout(bubbleSeekBar, progress, progressFloat, fromUser);
+            }
+
+            @Override
+            public void getProgressOnActionUp(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
+
+            }
+
+            @Override
+            public void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
+
+            }
+        });
 
         return settingBinding.getRoot();
     }
