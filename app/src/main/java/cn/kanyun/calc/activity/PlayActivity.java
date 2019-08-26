@@ -20,8 +20,15 @@ import android.os.IBinder;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.orhanobut.logger.Logger;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import cn.kanyun.calc.R;
 import cn.kanyun.calc.service.MusicService;
+import cn.kanyun.calc.service.SoundIntentService;
 import cn.kanyun.calc.viewmodel.SettingViewModel;
 
 public class PlayActivity extends AppCompatActivity implements ServiceConnection {
@@ -39,7 +46,7 @@ public class PlayActivity extends AppCompatActivity implements ServiceConnection
         setContentView(R.layout.activity_play);
         controller = Navigation.findNavController(this, R.id.fragment);
         NavigationUI.setupActionBarWithNavController(this, controller);
-
+        EventBus.getDefault().register(this);
 
     }
 
@@ -161,5 +168,30 @@ public class PlayActivity extends AppCompatActivity implements ServiceConnection
         musicService = null;
     }
 
+    /**
+     * EventBus订阅者 用于控制背景音乐开关
+     * @param state
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void controlMusic(Boolean state) {
+        Logger.d("控制背景音乐的订阅者收到消息");
+        if (state) {
+            musicService.controlMusic(state.booleanValue());
+        }else {
+            musicService.controlMusic(state.booleanValue());
+        }
+    }
 
+    /**
+     * EventBus订阅者 用于控制背景音效开关
+     * 这里之所以写在Activity中(本来写在SoundIntentService中是最好的),是因为SoundIntentService中定义了
+     * 几个静态方法(IDE自动生成的,方便外部调用),而该静态方法则startService() 启动了服务,因此在EventBus
+     * 进行注册时,并不能放在onCreate()方法中(因为执行startService()后才会执行onCrate()方法),所以放在Activity方法中
+     * @param state
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void contolSound(Integer state) {
+        Logger.d("控制音效的订阅者收到消息");
+        SoundIntentService.openSate = state.intValue();
+    }
 }

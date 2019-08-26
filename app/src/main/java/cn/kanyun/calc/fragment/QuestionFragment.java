@@ -18,17 +18,13 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.google.common.math.BigIntegerMath;
 import com.orhanobut.logger.Logger;
-import com.qmuiteam.qmui.arch.Utils;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import cn.kanyun.calc.Constant;
 import cn.kanyun.calc.R;
 import cn.kanyun.calc.Type;
 import cn.kanyun.calc.databinding.QuestionFragmentBinding;
@@ -75,11 +71,11 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
+//        这是AAC Navigation中传递的参数
         Bundle args = getArguments();
 //        这里使用requireActivity()getActivity()都可以
         mViewModel = ViewModelProviders.of(requireActivity(), new SavedStateVMFactory(requireActivity())).get(ScoreViewModel.class);
-        if (args != null && args.getBoolean("loseFlg")) {
+        if (args != null && args.getBoolean(Constant.KEY_FLAG_LAST_ERROR)) {
 //            如果跳转到该Fragment的上一个Fragment是LoseFragment,那么重置当前得分
             mViewModel.getCurrentScore().setValue(0);
         }
@@ -124,16 +120,12 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
 //                double 转int会有精度损失
                 int surplus = (int) (100 - consume);
                 if (surplus < 0) {
-//                    取消定时器
-                    timer.cancel();
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("currentScore", mViewModel.getCurrentScore().getValue());
-                    bundle.putInt("highScore", mViewModel.getHighScore().getValue());
-//                如果进度条走完了,则进入失败页面
-                    SoundIntentService.startActionAnswerResult(getContext(), false);
-//                    回答失败,跳转到失败页面
-                    NavController controller = Navigation.findNavController(questionFragmentBinding.progressBar);
-                    controller.navigate(R.id.action_questionFragment_to_loseFragment, bundle);
+//                如果进度条走完了,则设置答案为 -1,且自动提交
+                    sb.setLength(0);
+                    sb.append(-1);
+//                    View类的performClick和callOnclick函数都可以实现，不用用户手动点击，直接触发View的点击事件(callOnClick是performClick的简化版，不包含点击播放声音，不具有辅助功能)
+//                    这里直接使用Navigation跳转到错误页面会报错,
+                    questionFragmentBinding.buttonSubmit.callOnClick();
                 }
 
 //                设置processbar的进度(如果这个方法不能改变进度条的进度,尝试使用下面的方法)
@@ -279,9 +271,13 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * QuestionFragment销毁时取消TimerTask
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
+        timer.cancel();
     }
 
 

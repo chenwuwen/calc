@@ -63,7 +63,7 @@ public class SoundPoolUtil implements SoundPool.OnLoadCompleteListener {
         soundPool.load(context, R.raw.unbelievable, 4);
 
 //        普通按钮音效文件
-        soundPool.load(context, R.raw.click, 5);
+        soundPool.load(context, R.raw.click, 1);
 
 
 //        回答错误音效文件

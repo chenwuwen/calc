@@ -39,4 +39,9 @@ public class Constant {
      * 背景音效
      */
     public static String KEY_BACKGROUND_SOUND = "key_background_sound";
+
+    /**
+     * 进入QuestionFragment的标志位(判断是从MainFragment进的还是从LoseFragment进的)
+     */
+    public static String KEY_FLAG_LAST_ERROR = "key_flag_last_error";
 }

@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import cn.kanyun.calc.Constant;
 import cn.kanyun.calc.R;
 import cn.kanyun.calc.databinding.LoseFragmentBinding;
 
@@ -34,7 +35,7 @@ public class LoseFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("loseFlg", true);
+                bundle.putBoolean(Constant.KEY_FLAG_LAST_ERROR, true);
                 NavController controller = Navigation.findNavController(v);
                 controller.navigate(R.id.action_loseFragment_to_questionFragment, bundle);
             }

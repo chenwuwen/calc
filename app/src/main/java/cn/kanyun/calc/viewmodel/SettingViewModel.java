@@ -22,6 +22,7 @@ import com.blankj.utilcode.util.StringUtils;
 import com.google.common.base.Joiner;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
+import com.orhanobut.logger.Logger;
 import com.xw.repo.BubbleSeekBar;
 
 import org.greenrobot.eventbus.EventBus;
@@ -121,11 +122,18 @@ public class SettingViewModel extends AndroidViewModel {
      * @return
      */
     public void setBackGroundMusic(CompoundButton compoundButton, boolean isChecked) {
+//        要发送的对象(需要注意的是：发送的是对象,而非基本类型,如果要发送基本类型则需要将其转换为对应的包装类型)
+        Boolean state;
         if (isChecked) {
-            handle.getLiveData(Constant.KEY_BACKGROUND_MUSIC).setValue(true);
+            Logger.d("背景音乐打开,EvenBus发送消息");
+            state = new Boolean(true);
+            EventBus.getDefault().post(state);
         } else {
-            handle.getLiveData(Constant.KEY_BACKGROUND_MUSIC).setValue(false);
+            Logger.d("背景音乐关闭,EvenBus发送消息");
+            state = new Boolean(false);
+            EventBus.getDefault().post(state);
         }
+        handle.getLiveData(Constant.KEY_BACKGROUND_MUSIC).setValue(false);
     }
 
     /**
@@ -143,11 +151,23 @@ public class SettingViewModel extends AndroidViewModel {
      * @return
      */
     public void setBackGroundSound(CompoundButton compoundButton, boolean isChecked) {
+//        要EventBus发送的对象,这里本来可以用Boolean对象的,但是因为背景音乐使用了Boolean对象,因为这里使用Integer对象
+        Integer state;
+        if (isChecked) {
+            Logger.d("背景音效打开,EvenBus发送消息");
+            state = new Integer(1);
+            EventBus.getDefault().post(state);
+        } else {
+            Logger.d("背景音效关闭,EvenBus发送消息");
+            state = new Integer(0);
+            EventBus.getDefault().post(state);
+        }
         handle.getLiveData(Constant.KEY_BACKGROUND_SOUND).setValue(isChecked);
     }
 
     /**
      * 获取单次答题超时时间
+     *
      * @return
      */
     public MutableLiveData<Integer> getTimeout() {
@@ -156,6 +176,7 @@ public class SettingViewModel extends AndroidViewModel {
 
     /**
      * 设置单次答题超时时间
+     *
      * @return
      */
     public void setTimeout(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
@@ -249,19 +270,25 @@ public class SettingViewModel extends AndroidViewModel {
         boolean musicState = getBackGroundMusic().getValue();
         int timeout = getTimeout().getValue();
 
+//        数值上限
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_NUMBER_UPPER_LIMIT, numberUpper);
+//        运算符号
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_OPERATOR_SYMBOLS, symbols);
+//        数值上限类型
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_NUMBER_UPPER_TYPE, numberUpperType);
-        SPUtils.getInstance(Constant.KEY_BACKGROUND_MUSIC).put(Constant.KEY_BACKGROUND_MUSIC, musicState);
-        SPUtils.getInstance(Constant.KEY_BACKGROUND_SOUND).put(Constant.KEY_BACKGROUND_SOUND, soundState);
-        SPUtils.getInstance(Constant.KEY_TIMEOUT_ANSWER).put(Constant.KEY_TIMEOUT_ANSWER, timeout);
+//        背景音乐
+        SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_BACKGROUND_MUSIC, musicState);
+//        背景音效
+        SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_BACKGROUND_SOUND, soundState);
+//        单次答题超时时长
+        SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_TIMEOUT_ANSWER, timeout);
 
 //        这里使用Guava的Multimap,一个key对应多个value
         Multimap<Integer, Object> param = LinkedListMultimap.create();
         param.put(numberUpper, symbols);
         param.put(numberUpper, numberUpperType);
         param.put(numberUpper, timeout);
-
+//        发送
         EventBus.getDefault().post(param);
         Toasty.success(context, "保存配置成功！", Toast.LENGTH_SHORT).show();
     }

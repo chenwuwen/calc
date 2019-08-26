@@ -377,7 +377,7 @@ public class ScoreViewModel extends AndroidViewModel {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void sharePrefencesChanged(Multimap<Integer, Object> map) {
-
+        Logger.d("ScoreViewModel接收到发送者发送的消息");
 //        原来是直接使用的Map
 //        Set<Map.Entry<Integer, String>> set = map.entrySet();
 //        Iterator iterator = set.iterator();
@@ -393,7 +393,6 @@ public class ScoreViewModel extends AndroidViewModel {
         Set<Integer> set = map.keySet();
         Iterator iterator = set.iterator();
         while (iterator.hasNext()) {
-
 
             Integer numUpper = (Integer) iterator.next();
 

@@ -3,12 +3,23 @@ package cn.kanyun.calc.service;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.os.IBinder;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.SavedStateVMFactory;
+import androidx.lifecycle.ViewModelProviders;
+
+import com.orhanobut.logger.Logger;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Random;
 
+import cn.kanyun.calc.fragment.QuestionFragment;
 import cn.kanyun.calc.util.SoundPoolUtil;
+import cn.kanyun.calc.viewmodel.SettingViewModel;
 
 /**
  * IntentService，可以看做是Service和HandlerThread的结合体， 作用 :处理异步请求，实现多线程
@@ -29,10 +40,11 @@ import cn.kanyun.calc.util.SoundPoolUtil;
  */
 public class SoundIntentService extends IntentService {
 
+
     /**
      * 定义SoundPoolUtil
      */
-    private static SoundPoolUtil soundPoolUtil ;
+    private static SoundPoolUtil soundPoolUtil;
 
     // 定义Action
 
@@ -57,9 +69,17 @@ public class SoundIntentService extends IntentService {
      */
     private static final String EXTRA_PARAM_RESULT = "cn.kanyun.calc.service.extra.PARAM_RESULT";
 
+
+    /**
+     * 打开状态
+     */
+    public static int openSate = 1;
+
     public SoundIntentService() {
         super("SoundIntentService");
     }
+
+
 
     /**
      * 复写onStartCommand()方法
@@ -82,12 +102,14 @@ public class SoundIntentService extends IntentService {
      * @see IntentService
      */
     public static void startActionNormalKey(Context context) {
-        if (soundPoolUtil == null) {
-            soundPoolUtil = SoundPoolUtil.getInstance(context);
+        if (openSate == 1) {
+            if (soundPoolUtil == null) {
+                soundPoolUtil = SoundPoolUtil.getInstance(context);
+            }
+            Intent intent = new Intent(context, SoundIntentService.class);
+            intent.setAction(ACTION_NORMAL_KEY_CLICK);
+            context.startService(intent);
         }
-        Intent intent = new Intent(context, SoundIntentService.class);
-        intent.setAction(ACTION_NORMAL_KEY_CLICK);
-        context.startService(intent);
     }
 
     /**
@@ -96,13 +118,15 @@ public class SoundIntentService extends IntentService {
      * @see IntentService
      */
     public static void startActionAnswerResult(Context context, boolean param1) {
-        if (soundPoolUtil == null) {
-            soundPoolUtil = SoundPoolUtil.getInstance(context);
+        if (openSate == 1) {
+            if (soundPoolUtil == null) {
+                soundPoolUtil = SoundPoolUtil.getInstance(context);
+            }
+            Intent intent = new Intent(context, SoundIntentService.class);
+            intent.setAction(ACTION_ANSWER);
+            intent.putExtra(EXTRA_PARAM_RESULT, param1);
+            context.startService(intent);
         }
-        Intent intent = new Intent(context, SoundIntentService.class);
-        intent.setAction(ACTION_ANSWER);
-        intent.putExtra(EXTRA_PARAM_RESULT, param1);
-        context.startService(intent);
     }
 
     /**
@@ -112,13 +136,15 @@ public class SoundIntentService extends IntentService {
      * @param param1
      */
     public static void startActionAnswerReward(Context context, int param1) {
-        if (soundPoolUtil == null) {
-            soundPoolUtil = SoundPoolUtil.getInstance(context);
+        if (openSate == 1) {
+            if (soundPoolUtil == null) {
+                soundPoolUtil = SoundPoolUtil.getInstance(context);
+            }
+            Intent intent = new Intent(context, SoundIntentService.class);
+            intent.setAction(ACTION_REWARD);
+            intent.putExtra(EXTRA_PARAM_RESULT, param1);
+            context.startService(intent);
         }
-        Intent intent = new Intent(context, SoundIntentService.class);
-        intent.setAction(ACTION_REWARD);
-        intent.putExtra(EXTRA_PARAM_RESULT, param1);
-        context.startService(intent);
     }
 
     /**
@@ -159,6 +185,8 @@ public class SoundIntentService extends IntentService {
     /**
      * 真正处理Action的方法
      * 处理点击普通按钮时的音效
+     * 这个方法,在IDE中会默认生成throw new UnsupportedOperationException("Not yet implemented");的实现
+     * 在自己进行实现后，要IDE自动生成的抛出异常的代码删除掉
      */
     private void handleActionNormalKeyClick() {
         soundPoolUtil.play(5);
@@ -179,4 +207,6 @@ public class SoundIntentService extends IntentService {
             soundPoolUtil.play(6);
         }
     }
+
+
 }
