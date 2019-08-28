@@ -27,6 +27,9 @@ import cn.kanyun.calc.adapter.RewardAdapter;
 import cn.kanyun.calc.databinding.MeFragmentBinding;
 import cn.kanyun.calc.viewmodel.RewardViewModel;
 
+/**
+ * 我的仓库[奖励页面]
+ */
 public class MeFragment extends Fragment {
 
 

@@ -14,6 +14,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.google.common.io.Files;
 import com.orhanobut.logger.Logger;
 
@@ -34,8 +35,6 @@ public class RewardViewModel extends AndroidViewModel {
     SavedStateHandle handle;
     Context context;
 
-    private static String HAS_UNLOCK_REWARD = "has_unlock_reward";
-
     private static SPUtils spUtils;
 
     /**
@@ -47,9 +46,9 @@ public class RewardViewModel extends AndroidViewModel {
         super(application);
         this.handle = savedStateHandle;
         this.context = application;
-        if (!savedStateHandle.contains(HAS_UNLOCK_REWARD)) {
+        if (!savedStateHandle.contains(Constant.HAS_UNLOCK_REWARD)) {
             spUtils = SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME);
-            savedStateHandle.set(HAS_UNLOCK_REWARD, spUtils.getString(HAS_UNLOCK_REWARD, ""));
+            savedStateHandle.set(Constant.HAS_UNLOCK_REWARD, spUtils.getString(Constant.HAS_UNLOCK_REWARD, ""));
         }
         initReward();
     }
@@ -57,22 +56,27 @@ public class RewardViewModel extends AndroidViewModel {
     /**
      * 获取已经赢得的奖励
      *
-     * @return
+     * @return 奖励的路径
      */
     public MutableLiveData<String> getWinReward() {
-        return handle.getLiveData(HAS_UNLOCK_REWARD);
+        return handle.getLiveData(Constant.HAS_UNLOCK_REWARD);
     }
 
     /**
      * 添加赢得的奖励【在这里指的是,完成拼图后的奖励】
      *
+     * @param rewardPath 获得的奖励路径
      * @return
      */
-    public void addWinReward(String rewardName) {
+    public void addWinReward(String rewardPath) {
         String rewards = getWinReward().getValue();
-        rewards = rewards + "," + rewardName;
+        if (StringUtils.isEmpty(rewards)) {
+            rewards += rewardPath;
+        } else {
+            rewards = rewards + "," + rewardPath;
+        }
 //        保存到SharedPrefences
-        spUtils.put(HAS_UNLOCK_REWARD, rewards);
+        spUtils.put(Constant.HAS_UNLOCK_REWARD, rewards);
 //        保存到Handler中
         getWinReward().setValue(rewards);
     }
@@ -96,6 +100,7 @@ public class RewardViewModel extends AndroidViewModel {
                     BitmapDrawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmap);
                     reward.setDrawable(bitmapDrawable);
                     reward.setName(Files.getNameWithoutExtension(files[i]));
+                    reward.setPath(files[i]);
                     rewardList.add(reward);
                 }
             }
@@ -105,7 +110,8 @@ public class RewardViewModel extends AndroidViewModel {
     }
 
     /**
-     * 获取展现出来【呈现在页面】的 奖励
+     * 获取展现出来【呈现在奖励仓库页面】的 奖励
+     * 包括获得的/未获得
      *
      * @return
      */
@@ -116,10 +122,26 @@ public class RewardViewModel extends AndroidViewModel {
         List<String> winList = Arrays.asList(wins);
 //        遍历全部的奖励,如果其中的一项奖励的名字包含在已获得的奖励中,则将其设置为已解锁
         for (Reward reward : rewardList) {
-            if (winList.contains(reward.getName())) {
+            if (winList.contains(reward.getPath())) {
                 reward.setLock(false);
             }
         }
         return rewardList;
+    }
+
+    /**
+     * 获得未获得的奖励
+     *
+     * @return
+     */
+    public List<Reward> getLockReward() {
+        List<Reward> lockRewardList = new ArrayList<>();
+//        遍历全部的奖励,如果其中的一项奖励的名字包含在已获得的奖励中,则将其设置为已解锁
+        for (Reward reward : rewardList) {
+            if (reward.isLock()) {
+                lockRewardList.add(reward);
+            }
+        }
+        return lockRewardList;
     }
 }

@@ -1,9 +1,14 @@
 package cn.kanyun.calc.fragment;
 
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,21 +25,30 @@ import androidx.navigation.Navigation;
 
 import com.orhanobut.logger.Logger;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cn.kanyun.calc.Constant;
+import cn.kanyun.calc.ImagePiece;
 import cn.kanyun.calc.R;
+import cn.kanyun.calc.Reward;
 import cn.kanyun.calc.Type;
 import cn.kanyun.calc.databinding.QuestionFragmentBinding;
 import cn.kanyun.calc.service.SoundIntentService;
+import cn.kanyun.calc.util.ImageSplitter;
+import cn.kanyun.calc.viewmodel.RewardViewModel;
 import cn.kanyun.calc.viewmodel.ScoreViewModel;
 import es.dmoral.toasty.Toasty;
 
 public class QuestionFragment extends Fragment implements View.OnClickListener {
 
     private ScoreViewModel mViewModel;
+    private RewardViewModel rewardViewModel;
 
     QuestionFragmentBinding questionFragmentBinding;
 
@@ -75,6 +89,9 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
         Bundle args = getArguments();
 //        这里使用requireActivity()getActivity()都可以
         mViewModel = ViewModelProviders.of(requireActivity(), new SavedStateVMFactory(requireActivity())).get(ScoreViewModel.class);
+
+        rewardViewModel = ViewModelProviders.of(requireActivity(), new SavedStateVMFactory(requireActivity())).get(RewardViewModel.class);
+
         if (args != null && args.getBoolean(Constant.KEY_FLAG_LAST_ERROR)) {
 //            如果跳转到该Fragment的上一个Fragment是LoseFragment,那么重置当前得分
             mViewModel.getCurrentScore().setValue(0);
@@ -172,6 +189,24 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
         return questionFragmentBinding.getRoot();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+//        如果奖励碎片list为null,则初始化奖励碎片列表
+        if (mViewModel.getImagePieces() == null) {
+            List<Reward> imagePieceList = rewardViewModel.getLockReward();
+            Reward reward = imagePieceList.get(0);
+            AssetManager assetManager = getActivity().getAssets();
+            try {
+                InputStream inputStream = assetManager.open(reward.getPath());
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                List<ImagePiece> imagePieces = ImageSplitter.split(bitmap, ImageSplitter.NINE_GRID[0][0], ImageSplitter.NINE_GRID[0][0]);
+                mViewModel.setImagePieces(imagePieces);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     public void onClick(View v) {
@@ -246,12 +281,48 @@ public class QuestionFragment extends Fragment implements View.OnClickListener {
 
 //                    是否到达解锁分数
                     if (mViewModel.unLock) {
+//                        取消定时任务
+                        timer.cancel();
                         mViewModel.unLock = false;
 //                        解锁碎片音效
                         SoundIntentService.startActionAnswerReward(v.getContext(), 1);
+//                        跳转到解锁碎片页面
                         NavController controller = Navigation.findNavController(v);
                         controller.navigate(R.id.action_questionFragment_to_unlockFragment);
                     }
+
+//                    是否到达拼图游戏分数
+                    if (mViewModel.game) {
+//                        取消定时任务
+                        timer.cancel();
+                        mViewModel.game = false;
+//                        解锁碎片音效
+                        SoundIntentService.startActionAnswerReward(v.getContext(), 1);
+//                        跳转到拼图游戏页面,同时携带奖励碎片(由于直接携带Bitmap造成数据量过大而报错,所以使用Uri来代替,切图则在目的Fragment进行)
+                        Bundle chipImgBundle = new Bundle();
+//                        ArrayList<ImagePiece> arrayList = (ArrayList<ImagePiece>) mViewModel.getImagePieces();
+//                        chipImgBundle.putSerializable(Constant.KEY_CHIP_IMG_BUNDLE_NAME, arrayList);
+                        String path = rewardViewModel.getLockReward().get(0).getPath();
+                        Uri uri = null;
+                        AssetManager assetManager = getActivity().getAssets();
+                        try {
+                            InputStream inputStream = assetManager.open(path);
+                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+//                            将Bitmap转换为Uri
+                            uri = Uri.parse(MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, null, null));
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        chipImgBundle.putParcelable(Constant.KEY_SRC_IMG_BUNDLE_NAME, uri);
+                        chipImgBundle.putString(Constant.KEY_SRC_IMG_BUNDLE_PATH, path);
+                        NavController controller = Navigation.findNavController(v);
+                        controller.navigate(R.id.action_questionFragment_to_jigsawPuzzleFragment, chipImgBundle);
+
+//                        获取到了全部的奖励碎片,将会跳转到拼图页面,此时设置碎片list为null
+                        mViewModel.setImagePieces(null);
+                    }
+
                 } else {
 //                  取消定时任务
                     timer.cancel();

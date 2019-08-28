@@ -12,6 +12,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         tools:context=".fragment.MainFragment">
 
 
@@ -27,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="8dp"
             android:text="@string/btn_begin"
             app:layout_constraintBottom_toTopOf="@+id/button_setting"
@@ -40,13 +43,10 @@
             android:id="@+id/button_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:text="@string/btn_setting"
             app:layout_constraintBottom_toTopOf="@+id/button_me_reward"
-            app:layout_constraintEnd_toStartOf="@+id/guideline15"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/guideline16"
+            app:layout_constraintEnd_toEndOf="@+id/button_begin"
+            app:layout_constraintStart_toStartOf="@+id/button_begin"
             app:layout_constraintTop_toBottomOf="@+id/button_begin" />
 
         <androidx.constraintlayout.widget.Guideline
@@ -80,13 +80,11 @@
             android:id="@+id/button_me_reward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:text="@string/reward_main"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline15"
+            app:layout_constraintBottom_toTopOf="@+id/button"
+            app:layout_constraintEnd_toEndOf="@+id/button_setting"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/guideline16"
+            app:layout_constraintStart_toStartOf="@+id/button_setting"
             app:layout_constraintTop_toBottomOf="@+id/button_setting" />
 
         <androidx.constraintlayout.widget.Guideline
@@ -94,6 +92,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.4" />
+            app:layout_constraintGuide_percent="0.3" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/secret_book_str"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/button_me_reward"
+            app:layout_constraintStart_toStartOf="@+id/button_me_reward" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

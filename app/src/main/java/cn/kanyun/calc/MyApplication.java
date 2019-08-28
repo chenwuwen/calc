@@ -1,6 +1,7 @@
 package cn.kanyun.calc;
 
 import android.app.Application;
+import android.graphics.Bitmap;
 
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
@@ -12,6 +13,12 @@ public class MyApplication extends Application {
 
     private static MyApplication instance;
 
+    /**
+     * 用于Activity间传递Bitmap
+     * 因为Activity间使用(intent)传递数据有大小限制(40k)
+     * 所以使用全局变量来传递
+     */
+    public static Bitmap showBitmap;
 
     public static MyApplication getInstance() {
         return instance;

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.google.common.collect.Multimap;
+import com.google.common.io.Files;
 import com.google.common.math.IntMath;
 import com.google.common.primitives.Ints;
 import com.orhanobut.logger.Logger;
@@ -25,6 +27,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,8 +42,11 @@ import java.util.Random;
 import java.util.Set;
 
 import cn.kanyun.calc.Constant;
+import cn.kanyun.calc.ImagePiece;
 import cn.kanyun.calc.R;
 import cn.kanyun.calc.Type;
+import cn.kanyun.calc.util.ChipUtil;
+import cn.kanyun.calc.util.ImageSplitter;
 import es.dmoral.toasty.Toasty;
 
 /**
@@ -102,17 +109,27 @@ public class ScoreViewModel extends AndroidViewModel {
 
 
     /**
-     * 解锁条件
+     * 奖励碎片 数组
      */
-    private static Map<Integer, Bitmap> unLockScore = new HashMap(){{
-        put(100, null);
-    }};
+    private List<ImagePiece> imagePieces;
 
     /**
      * 解锁标志
      */
     public boolean unLock = false;
 
+    /**
+     * 拼图标志
+     */
+    public boolean game = false;
+
+    public List<ImagePiece> getImagePieces() {
+        return imagePieces;
+    }
+
+    public void setImagePieces(List<ImagePiece> imagePieces) {
+        this.imagePieces = imagePieces;
+    }
 
     /**
      * 构造函数的参数,添加了savedStateHandle,所以不再需要在ViewModel类中定义 MutableLiveData类型的字段了
@@ -156,13 +173,46 @@ public class ScoreViewModel extends AndroidViewModel {
             numberUpperType = sp.getInt(Constant.KEY_NUMBER_UPPER_TYPE, Type.MEMBER_GUIDE.number);
 
         }
-        initReward();
         this.handle = savedStateHandle;
+//        初始化奖励(注意这行代码的位置,需要在上面代码的后面,因为这行代码的实现用到了handle对象)
+//        initReward();
+
+        ChipUtil.HIGH_SCORE = getHighScore().getValue();
     }
 
+    /**
+     * 初始化奖励【这里的奖励指的是碎片】
+     * 有RewardViewModel去做这件事
+     */
+    @Deprecated
     private void initReward() {
         AssetManager assetManager = context.getAssets();
-//        assetManager.
+        SPUtils sp = SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME);
+//        已解锁的奖励,默认是：文件名 + "," （字符串）形式
+        String unlockStr = sp.getString(Constant.HAS_UNLOCK_REWARD, "");
+        List<String> allReward = new ArrayList<>();
+        try {
+            String[] fileNames = assetManager.list("");
+            for (int i = 0; i < fileNames.length; i++) {
+                String extension = Files.getFileExtension(fileNames[i]);
+                if (extension.equals("jpg")) {
+                    allReward.add(fileNames[i]);
+                }
+            }
+            List<String> unlock = Arrays.asList(unlockStr.split(","));
+//            在全部的奖励中移除已获取的奖励,此时allReward就变成了,待获取的奖励
+            allReward.removeAll(unlock);
+//            取到待解锁的奖励(默认取出第一个奖励),并转换成输入流
+            InputStream inputStream = assetManager.open(allReward.get(0));
+//            将输入流转化为Bitmap
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+//            进行图片切割
+            imagePieces = ImageSplitter.split(bitmap, ImageSplitter.NINE_GRID[0][0], ImageSplitter.NINE_GRID[0][0]);
+//            初始化奖励后,需要将当前最高分,记录在ChipUtil中,方便计算奖励
+            ChipUtil.HIGH_SCORE = getHighScore().getValue();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -326,7 +376,6 @@ public class ScoreViewModel extends AndroidViewModel {
      */
     void saveHighScore() {
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(KEY_HIGH_SCORE, getHighScore().getValue());
-
     }
 
     /**
@@ -337,18 +386,25 @@ public class ScoreViewModel extends AndroidViewModel {
         getCurrentScore().setValue(getCurrentScore().getValue() + 1);
 //        判断是否打破之前的记录
         if (getCurrentScore().getValue() > getHighScore().getValue()) {
+
+            Toasty.success(context, "刷新历史最佳记录", Toast.LENGTH_SHORT, true).show();
+
             getHighScore().setValue(getCurrentScore().getValue());
             saveHighScore();
 
-//            判断是否达到解锁分数,并且当前分数超过了历史最高纪录
-            if (unLockScore.get(getCurrentScore().getValue()) != null) {
+//            只有当前分数大于历史最高分才会进行计算
+            int temp = ChipUtil.compute(getCurrentScore().getValue());
+//            判断是否达到解锁分数
+            if (temp >= 0 && temp < 9) {
 //                设置解锁标志为true
                 unLock = true;
 //                将解锁奖励放到ViewModel中
-                getUnlockReward().setValue(unLockScore.get(getCurrentScore().getValue()));
-                Toasty.success(context, "解锁新车辆", Toast.LENGTH_SHORT, true).show();
+                getUnlockReward().setValue(imagePieces.get(temp).bitmap);
+                Toasty.success(context, "意外获取到一个碎片,继续获取吧！", Toast.LENGTH_SHORT, true).show();
             } else {
-                Toasty.success(context, "刷新历史最佳记录", Toast.LENGTH_SHORT, true).show();
+//                设置拼图游戏标志为true
+                game = true;
+                Toasty.success(context, "获取到全部碎片,拼图得到奖励", Toast.LENGTH_SHORT, true).show();
             }
         }
 
@@ -373,6 +429,7 @@ public class ScoreViewModel extends AndroidViewModel {
      * 接收shareprefences文件变化事件
      * 这里使用的形参是Guava的Multimap
      * 其发送端的真实类型是LinkedListMultimap
+     *
      * @param map
      */
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_questionFragment_to_unlockFragment"
             app:destination="@id/unlockFragment" />
+        <action
+            android:id="@+id/action_questionFragment_to_jigsawPuzzleFragment"
+            app:destination="@id/jigsawPuzzleFragment" />
     </fragment>
     <fragment
         android:id="@+id/loseFragment"
@@ -52,6 +55,9 @@
         <action
             android:id="@+id/action_mainFragment_to_meFragment"
             app:destination="@id/meFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_jigsawPuzzleFragment"
+            app:destination="@id/jigsawPuzzleFragment" />
     </fragment>
     <action android:id="@+id/action_global_mainFragment" app:destination="@id/mainFragment" />
     <fragment
@@ -68,4 +74,13 @@
         android:name="cn.kanyun.calc.fragment.MeFragment"
         android:label="me_fragment"
         tools:layout="@layout/me_fragment" />
+    <fragment
+        android:id="@+id/jigsawPuzzleFragment"
+        android:name="cn.kanyun.calc.fragment.JigsawPuzzleFragment"
+        android:label="fragment_jigsaw_puzzle"
+        tools:layout="@layout/fragment_jigsaw_puzzle" >
+        <action
+            android:id="@+id/action_jigsawPuzzleFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
 </navigation>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.kanyun.calc">
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
 
     <application
         android:name=".MyApplication"
@@ -13,21 +13,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/QMUI.Compat">
+
+
         <service
             android:name=".service.SoundIntentService"
-            android:exported="false"></service>
+            android:exported="false" />
         <service
             android:name=".service.MusicService"
             android:enabled="true"
-            android:exported="true" />
-
-        <activity android:name=".activity.PlayActivity">
+            android:exported="true" /> <!-- configChanges:横竖屏切换处理。 -->
+        <!-- 如果要支持横竖屏切换，一定要加上这句，否则在切换横竖屏的时候会发生异常。 -->
+        <activity
+            android:name=".activity.PlayActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activity.ShowSrcImageActivity"
+            android:label="@string/title_activity_show_src_image"
+            android:theme="@style/NoActionBar"></activity>
     </application>
 
 </manifest>

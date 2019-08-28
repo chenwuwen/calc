@@ -39,8 +39,11 @@
     <string name="result_operation_type">以运算结果的数值为准(只有加减运算)</string>
     <string name="reward_main">我的</string>
     <string name="background_music">背景音乐：</string>
-    <string name="background_sound">背景音效</string>
+    <string name="background_sound">背景音效：</string>
     <string name="time_info_str">单次答题时长</string>
+    <string name="secret_book_str">秘籍</string>
+    <string name="view_src_img_str">查看原图</string>
+    <string name="title_activity_show_src_image">原图</string>
 
 
 </resources>
