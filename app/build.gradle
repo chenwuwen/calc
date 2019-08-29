@@ -89,4 +89,9 @@ dependencies {
 
     implementation 'pub.devrel:easypermissions:2.0.1'
 
+//    PhotoView不需要写任何代码就可以实现图片手势缩放，旋转，相比ImageView，用户体验更好
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+
+    implementation 'com.github.bumptech.glide:glide:4.3.1'
+
 }

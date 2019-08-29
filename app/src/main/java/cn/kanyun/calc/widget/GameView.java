@@ -16,6 +16,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
+import com.orhanobut.logger.Logger;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -460,8 +462,8 @@ public class GameView extends RelativeLayout implements View.OnClickListener {
 
             handler.removeMessages(TIME_CHANGED);
 
-            Log.i("tag", "成功");
-            Toast.makeText(getContext(), "成功,进入下一关！", Toast.LENGTH_LONG).show();
+            Logger.d("完成拼图");
+//            Toast.makeText(getContext(), "成功,进入下一关！", Toast.LENGTH_LONG).show();
             handler.sendEmptyMessage(NEXT_LEVEL);
 
         }

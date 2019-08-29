@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -33,6 +34,7 @@ import cn.kanyun.calc.databinding.FragmentJigsawPuzzleBinding;
 import cn.kanyun.calc.listener.GameJigsawPuzzleListener;
 import cn.kanyun.calc.util.ImageSplitter;
 import cn.kanyun.calc.viewmodel.RewardViewModel;
+import es.dmoral.toasty.Toasty;
 
 /**
  * 拼图Fragment
@@ -106,6 +108,7 @@ public class JigsawPuzzleFragment extends Fragment {
             @Override
             public void nextLevel(int nextLevel) {
                 Logger.d("完成拼图游戏");
+                Toasty.success(getContext(), "恭喜你获得该奖励,快去仓库看看吧！", Toast.LENGTH_SHORT).show();
 //                将奖励报错到SharedPrefences
                 rewardViewModel.addWinReward(srcImagePath);
                 fragmentJigsawPuzzleBinding.chronometer.stop();

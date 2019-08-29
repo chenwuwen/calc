@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
+import androidx.recyclerview.widget.SortedList;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
@@ -22,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import cn.kanyun.calc.Constant;
@@ -38,7 +41,7 @@ public class RewardViewModel extends AndroidViewModel {
     private static SPUtils spUtils;
 
     /**
-     * 所有的奖励
+     * 所有的奖励,这个所有奖励并不包含解锁/未解锁的信息
      */
     public static List<Reward> rewardList = new ArrayList<>();
 
@@ -50,7 +53,10 @@ public class RewardViewModel extends AndroidViewModel {
             spUtils = SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME);
             savedStateHandle.set(Constant.HAS_UNLOCK_REWARD, spUtils.getString(Constant.HAS_UNLOCK_REWARD, ""));
         }
-        initReward();
+//        当多处引用了RewardViewModel时,该方法会执行多次,所以先判断一下
+        if (rewardList.size() == 0) {
+            initReward();
+        }
     }
 
     /**
@@ -86,6 +92,12 @@ public class RewardViewModel extends AndroidViewModel {
      * 图片资源在assert目录下,assert目录下可以创建子目录,assert目录下的文件不参与编译,保持原格式
      */
     private void initReward() {
+
+//        测试：用来添加获得的奖励,直接修改SharedPrefences无效
+//        addWinReward("unlock_2.jpg");
+//        addWinReward("unlock_3.jpg");
+//        addWinReward("unlock_5.jpg");
+
         AssetManager assetManager = context.getAssets();
         try {
 //            注意这个path(获取/assets目录下所有文件)
@@ -116,6 +128,7 @@ public class RewardViewModel extends AndroidViewModel {
      * @return
      */
     public List<Reward> getShowReward() {
+        List<Reward> rewards = new ArrayList<>();
 //        已获得的奖励
         String winStr = getWinReward().getValue();
         String[] wins = winStr.split(",");
@@ -125,8 +138,27 @@ public class RewardViewModel extends AndroidViewModel {
             if (winList.contains(reward.getPath())) {
                 reward.setLock(false);
             }
+            rewards.add(reward);
         }
-        return rewardList;
+
+
+//        在这里进行排序(保证已解锁的在未解锁的前面),目的是在奖励仓库页面,在预览图模式下,保证点击的小图与查看的大图是一致的
+//        如果不排序,由于奖励仓库页面使用的是GridView,其各个item的索引 是根据全部奖励设定的,而不是已解锁的奖励设定的,
+//        所以会造成,点击小图预览大图会出现不一致的情况,所以需要排序
+        Collections.sort(rewards, new Comparator<Reward>() {
+            @Override
+            public int compare(Reward o1, Reward o2) {
+                if (o1.isLock() && !o2.isLock()) {
+                    return 1;
+                } else if (!o1.isLock() && o2.isLock()) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+
+        return rewards;
     }
 
     /**

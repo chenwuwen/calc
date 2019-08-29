@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +26,7 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ViewHolder
     public RewardAdapter(List<Reward> rewards) {
         this.rewards = rewards;
     }
+
 
     @NonNull
     @Override
@@ -47,8 +49,11 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Reward reward = rewards.get(position);
         holder.getBinding().setReward(reward);
+//        rewards.get(position).getName()
+//        利用共享元素预览大图：https://www.jianshu.com/p/05e3b99ce5ce  https://www.jianshu.com/p/3d432402448e
+        ViewCompat.setTransitionName(holder.getBinding().imageView, "share");
 //        配置点击事件
-        holder.getBinding().linearLayout2.setOnClickListener(new RewardClickListener(holder.getBinding().getReward().getName()));
+        holder.getBinding().linearLayout2.setOnClickListener(new RewardClickListener(holder.itemView, holder.getBinding().getReward().getName(), holder.getItemId(), position));
     }
 
     @Override

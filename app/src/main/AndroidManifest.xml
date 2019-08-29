@@ -32,11 +32,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.ShowSrcImageActivity"
             android:label="@string/title_activity_show_src_image"
-            android:theme="@style/NoActionBar"></activity>
+            android:theme="@style/NoActionBar" />
+        <activity
+            android:name=".activity.ImageAppreciateActivity"
+            android:theme="@style/NoActionBar" />
     </application>
+
 
 </manifest>

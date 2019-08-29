@@ -1,7 +1,7 @@
 package cn.kanyun.calc;
 
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+
 
 public class Reward {
 
@@ -47,4 +47,5 @@ public class Reward {
     public void setPath(String path) {
         this.path = path;
     }
+
 }
