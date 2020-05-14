@@ -42,6 +42,7 @@ import java.util.Random;
 import java.util.Set;
 
 import cn.kanyun.calc.Constant;
+import cn.kanyun.calc.Difficulty;
 import cn.kanyun.calc.ImagePiece;
 import cn.kanyun.calc.R;
 import cn.kanyun.calc.Type;
@@ -107,6 +108,10 @@ public class ScoreViewModel extends AndroidViewModel {
      */
     public int timeoutAnswer = 10;
 
+    /**
+     * 解锁难度
+     */
+    public static int UNLOCK_DIFFICULT;
 
     /**
      * 奖励碎片 数组
@@ -171,6 +176,8 @@ public class ScoreViewModel extends AndroidViewModel {
             NUMBER_UPPER = sp.getInt(Constant.KEY_NUMBER_UPPER_LIMIT, 10);
 //            数值上限类型
             numberUpperType = sp.getInt(Constant.KEY_NUMBER_UPPER_TYPE, Type.MEMBER_GUIDE.number);
+//            解锁难度
+            UNLOCK_DIFFICULT = sp.getInt(Constant.KEY_UNLOCK_DIFFICULTY, Difficulty.SIMPLE.price);
 
         }
         this.handle = savedStateHandle;
@@ -393,7 +400,8 @@ public class ScoreViewModel extends AndroidViewModel {
             saveHighScore();
 
 //            只有当前分数大于历史最高分才会进行计算
-            int temp = ChipUtil.compute(getCurrentScore().getValue());
+            int temp = ChipUtil.compute(getCurrentScore().getValue(),Difficulty.getDifficulty(UNLOCK_DIFFICULT));
+
 //            判断是否达到解锁分数
             if (temp >= 0 && temp < 9) {
 //                设置解锁标志为true
@@ -401,11 +409,18 @@ public class ScoreViewModel extends AndroidViewModel {
 //                将解锁奖励放到ViewModel中
                 getUnlockReward().setValue(imagePieces.get(temp).bitmap);
                 Toasty.success(context, "意外获取到一个碎片,继续获取吧！", Toast.LENGTH_SHORT, true).show();
-            } else {
+            }
+
+            if(temp == Integer.MAX_VALUE) {
 //                设置拼图游戏标志为true
                 game = true;
                 Toasty.success(context, "获取到全部碎片,拼图得到奖励", Toast.LENGTH_SHORT, true).show();
             }
+
+            if (temp == Integer.MIN_VALUE){
+                Logger.d("未达到解锁分数");
+            }
+
         }
 
 //        生成下一个计算式

@@ -8,6 +8,10 @@ public class Constant {
     public static final String KEY_TIMEOUT_ANSWER = "key_timeout_answer";
 
 
+    /**
+     * 解锁难度
+     */
+    public static final String KEY_UNLOCK_DIFFICULTY = "key_unlock_difficulty";
 
     /**
      * 计算数值上限

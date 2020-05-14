@@ -26,7 +26,7 @@
     <string name="dialog_negative_message">我再想想</string>
     <string name="quit_dialog_message">确定退出吗?</string>
     <string name="continue_message">继续挑战</string>
-    <string name="return_message">返回</string>
+    <string name="return_message">回到主页</string>
 
     <string name="number_upper_limit">数值上限</string>
     <string name="set_operator_symbol_add">+</string>
@@ -44,6 +44,10 @@
     <string name="secret_book_str">秘籍</string>
     <string name="view_src_img_str">查看原图</string>
     <string name="title_activity_show_src_image">原图</string>
+    <string name="unlocking_difficulty">解锁难度</string>
+    <string name="simple">简单</string>
+    <string name="normal">普通</string>
+    <string name="difficult">困难</string>
 
 
 </resources>

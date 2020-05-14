@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ import cn.kanyun.calc.R;
 import cn.kanyun.calc.Reward;
 import cn.kanyun.calc.databinding.FragmentMainBinding;
 import cn.kanyun.calc.util.ImageSplitter;
+import cn.kanyun.calc.util.LongClickUtils;
 import cn.kanyun.calc.viewmodel.RewardViewModel;
 import cn.kanyun.calc.viewmodel.ScoreViewModel;
 import es.dmoral.toasty.Toasty;
@@ -117,9 +119,19 @@ public class MainFragment extends Fragment {
 
 //        判断当前版本是否是DEBUG版本(DEBUG版本将显示秘籍按钮,RELEASE版本隐藏秘籍按钮,默认是显示的)
         ApplicationInfo applicationInfo = getContext().getApplicationInfo();
-        if ((applicationInfo.flags & applicationInfo.FLAG_DEBUGGABLE) == 0) {
+        if ((applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == 0) {
 //            能进入表示当前版本是RELEASE版本
             mainFragmentBinding.buttonSecretBook.setVisibility(View.GONE);
+
+//           在Release版本中 长按 "我的" 按钮5秒,显示秘籍页面
+            LongClickUtils.setLongClick(new Handler(), mainFragmentBinding.buttonMeReward, 5000, new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    //todo:补充长按事件的处理逻辑
+                    mainFragmentBinding.buttonSecretBook.setVisibility(View.VISIBLE);
+                    return true;
+                }
+            });
         }
         return mainFragmentBinding.getRoot();
     }

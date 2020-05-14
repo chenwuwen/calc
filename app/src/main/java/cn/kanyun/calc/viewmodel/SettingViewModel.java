@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Random;
 
 import cn.kanyun.calc.Constant;
+import cn.kanyun.calc.Difficulty;
 import cn.kanyun.calc.R;
 import cn.kanyun.calc.Type;
 import es.dmoral.toasty.Toasty;
@@ -76,6 +77,8 @@ public class SettingViewModel extends AndroidViewModel {
             savedStateHandle.set(Constant.KEY_BACKGROUND_SOUND, sp.getBoolean(Constant.KEY_BACKGROUND_SOUND, true));
 //            做题时长SeekBar,默认10秒
             savedStateHandle.set(Constant.KEY_TIMEOUT_ANSWER, sp.getInt(Constant.KEY_TIMEOUT_ANSWER, 10));
+//            解锁难度默认为 简单
+            savedStateHandle.set(Constant.KEY_UNLOCK_DIFFICULTY,sp.getInt(Constant.KEY_TIMEOUT_ANSWER, Difficulty.SIMPLE.price));
         }
         this.handle = savedStateHandle;
     }
@@ -96,6 +99,15 @@ public class SettingViewModel extends AndroidViewModel {
      */
     public MutableLiveData<Integer> getNumberUpperType() {
         return handle.getLiveData(Constant.KEY_NUMBER_UPPER_TYPE);
+    }
+
+    /**
+     * 获得解锁难度
+     *
+     * @return
+     */
+    public MutableLiveData<Integer> getUnlockDifficulty() {
+        return handle.getLiveData(Constant.KEY_UNLOCK_DIFFICULTY);
     }
 
     /**
@@ -193,10 +205,7 @@ public class SettingViewModel extends AndroidViewModel {
     public boolean isChecked(String symbol) {
         String string = getCheckedSymbols().getValue();
         List<String> symbols = new ArrayList(Arrays.asList(string.split(",")));
-        if (symbols.contains(symbol)) {
-            return true;
-        }
-        return false;
+        return symbols.contains(symbol);
     }
 
 
@@ -253,6 +262,31 @@ public class SettingViewModel extends AndroidViewModel {
         }
     }
 
+    /**
+     * 解锁难度改变
+     * @param radioGroup
+     * @param checkedId
+     */
+    public void unlockDifficultChange(RadioGroup radioGroup,int checkedId) {
+        switch(checkedId){
+            case R.id.unlock_simple:
+                Logger.d("设置解锁难度为简单");
+                getUnlockDifficulty().setValue(Difficulty.SIMPLE.price);
+                break;
+            case R.id.unlock_normal:
+                Logger.d("设置解锁难度为普通");
+                getUnlockDifficulty().setValue(Difficulty.NORMAL.price);
+                break;
+            case R.id.unlock_difficult:
+                Logger.d("设置解锁难度为困难");
+                getUnlockDifficulty().setValue(Difficulty.DIFFICULT.price);
+                break;
+            default:
+                Logger.d("未找到对应解锁难度");
+        }
+
+    }
+
 
     /**
      * 保存设置，持久化到SharedPrefences
@@ -269,6 +303,7 @@ public class SettingViewModel extends AndroidViewModel {
         boolean soundState = getBackGroundSound().getValue();
         boolean musicState = getBackGroundMusic().getValue();
         int timeout = getTimeout().getValue();
+        int difficult = getUnlockDifficulty().getValue();
 
 //        数值上限
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_NUMBER_UPPER_LIMIT, numberUpper);
@@ -282,6 +317,8 @@ public class SettingViewModel extends AndroidViewModel {
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_BACKGROUND_SOUND, soundState);
 //        单次答题超时时长
         SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_TIMEOUT_ANSWER, timeout);
+//        解锁难度
+        SPUtils.getInstance(Constant.SHARED_PREFENCES_NAME).put(Constant.KEY_UNLOCK_DIFFICULTY, difficult);
 
 //        这里使用Guava的Multimap,一个key对应多个value
         Multimap<Integer, Object> param = LinkedListMultimap.create();

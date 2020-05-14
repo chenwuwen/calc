@@ -9,6 +9,7 @@
             name="setData"
             type="cn.kanyun.calc.viewmodel.SettingViewModel" />
         <import type="cn.kanyun.calc.Type" alias="type"/>
+        <import type="cn.kanyun.calc.Difficulty" alias="difficulty"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,85 +18,18 @@
         tools:context=".fragment.SettingFragment">
 
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline24"
+        <Button
+            android:id="@+id/setting_save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.2" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline35"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.3" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline26"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.45" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline25"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.7" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline34"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.8" />
-
-        <TextView
-            android:id="@+id/textView12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/number_upper_limit"
-            app:layout_constraintBottom_toBottomOf="@+id/editText2"
-            app:layout_constraintEnd_toStartOf="@+id/editText2"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/editText2" />
-
-
-        <!--android:onTextChanged后面一个括号内的参数,是android:onTextChanged中参数(onTextChanged是EditText内置的方法),而后面括号的参数,是自定义方法的参数-->
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-
-            android:ems="10"
-            android:inputType="numberSigned"
-            android:onTextChanged="@{(charSequence,start,before,count)->setData.numberChange(charSequence,start,before,count)}"
-            android:text="@{String.valueOf(setData.numberUpperLimit)}"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toTopOf="@+id/guideline35"
+            android:layout_marginTop="8dp"
+            android:onClick="@{()->setData.saveSetting()}"
+            android:text="@string/setting_save_btn_str"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/textView12"
-            app:layout_constraintTop_toTopOf="@+id/guideline24" />
-
-        <TextView
-            android:id="@+id/textView13"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/operator_symbol"
-            app:layout_constraintBottom_toTopOf="@+id/guideline25"
-            app:layout_constraintEnd_toStartOf="@+id/checkBox"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline21"
-            app:layout_constraintVertical_bias="0.669" />
+            app:layout_constraintTop_toTopOf="@+id/guideline34" />
 
-        <!--checked后面的表达式不能添加()-> -->
         <CheckBox
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
@@ -153,35 +87,77 @@
             app:layout_constraintTop_toTopOf="@+id/checkBox3"
             tools:text="*" />
 
-        <Button
-            android:id="@+id/setting_save_button"
+        <EditText
+            android:id="@+id/editText2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:onClick="@{()->setData.saveSetting()}"
-            android:text="@string/setting_save_btn_str"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="8dp"
+
+            android:ems="10"
+            android:inputType="numberSigned"
+            android:onTextChanged="@{(charSequence,start,before,count)->setData.numberChange(charSequence,start,before,count)}"
+            android:text="@{String.valueOf(setData.numberUpperLimit)}"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@+id/guideline35"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline34" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline21"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.6" />
-
-        <TextView
-            android:id="@+id/textView9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/number_upper_type"
-            app:layout_constraintBottom_toTopOf="@+id/guideline21"
-            app:layout_constraintEnd_toStartOf="@+id/radioGroup"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline26" />
+            app:layout_constraintStart_toEndOf="@+id/textView12"
+            app:layout_constraintTop_toTopOf="@+id/guideline24" />
+
+
+        <!--android:onTextChanged后面一个括号内的参数,是android:onTextChanged中参数(onTextChanged是EditText内置的方法),而后面括号的参数,是自定义方法的参数-->
+
+        <!--checked后面的表达式不能添加()-> -->
+
+    <RadioGroup
+        android:id="@+id/difficultyRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onCheckedChanged="@{(radioGroup,checkId)->setData.unlockDifficultChange(radioGroup,checkId)}"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/textView17"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView17"
+        app:layout_constraintTop_toTopOf="@+id/textView17">
+
+        <RadioButton
+            android:id="@+id/unlock_simple"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/simple"
+            android:checked="@{setData.unlockDifficulty == difficulty.SIMPLE.price?true:false}"
+            app:layout_constraintBottom_toBottomOf="@+id/textView17"
+            app:layout_constraintEnd_toStartOf="@+id/unlock_difficult"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView17"
+            app:layout_constraintTop_toTopOf="@+id/textView17" />
+
+        <RadioButton
+            android:id="@+id/unlock_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/normal"
+            android:checked="@{setData.unlockDifficulty == difficulty.NORMAL.price?true:false}"
+            app:layout_constraintBottom_toBottomOf="@+id/unlock_simple"
+            app:layout_constraintEnd_toStartOf="@+id/unlock_difficult"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/unlock_simple"
+            app:layout_constraintTop_toTopOf="@+id/unlock_simple" />
+
+        <RadioButton
+            android:id="@+id/unlock_difficult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/difficult"
+            android:checked="@{setData.unlockDifficulty == difficulty.DIFFICULT.price?true:false}"
+            app:layout_constraintBottom_toBottomOf="@+id/unlock_normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/unlock_normal"
+            app:layout_constraintTop_toTopOf="@+id/unlock_normal" />
+
+        </RadioGroup>
 
         <RadioGroup
             android:id="@+id/radioGroup"
@@ -212,6 +188,39 @@
         </RadioGroup>
 
         <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/number_upper_limit"
+            app:layout_constraintBottom_toBottomOf="@+id/editText2"
+            app:layout_constraintEnd_toStartOf="@+id/editText2"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/editText2" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/operator_symbol"
+            app:layout_constraintBottom_toTopOf="@+id/guideline36"
+            app:layout_constraintEnd_toStartOf="@+id/checkBox"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline21" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/number_upper_type"
+            app:layout_constraintBottom_toTopOf="@+id/guideline21"
+            app:layout_constraintEnd_toStartOf="@+id/radioGroup"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline26" />
+
+        <TextView
             android:id="@+id/textView14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -223,6 +232,92 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline25" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/background_sound"
+            app:layout_constraintBottom_toBottomOf="@+id/music_switch"
+            app:layout_constraintEnd_toStartOf="@+id/sound_switch"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/music_switch"
+            app:layout_constraintTop_toTopOf="@+id/music_switch" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/time_info_str"
+            app:layout_constraintBottom_toTopOf="@+id/guideline26"
+            app:layout_constraintEnd_toStartOf="@+id/seekBar"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline35" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="60dp"
+            android:layout_height="18dp"
+            android:text="TextView"
+            app:layout_constraintBottom_toTopOf="@+id/guideline25"
+            app:layout_constraintEnd_toStartOf="@+id/difficultyRadioGroup"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline36"
+            tools:text="@string/unlocking_difficulty" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.1" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline35"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.2" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline26"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.3" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline25"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.65" />
+
+        <!--这个BubbleSeekBar组件的onProgressChanged貌似无法使用databinding,事件监听放到了fragment中了-->
+        <!--android:onProgressChanged="@{(seekBar,progress,progressFloat,fromUser)->setData.setTimeout(seekBar,progress,progressFloat,fromUser)}"-->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline36"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.55" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline34"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.7" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.45" />
 
         <com.kyleduo.switchbutton.SwitchButton
             android:id="@+id/music_switch"
@@ -242,17 +337,6 @@
             app:layout_constraintStart_toEndOf="@+id/textView14"
             app:layout_constraintTop_toTopOf="@+id/textView14" />
 
-        <TextView
-            android:id="@+id/textView15"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/background_sound"
-            app:layout_constraintBottom_toBottomOf="@+id/music_switch"
-            app:layout_constraintEnd_toStartOf="@+id/sound_switch"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/music_switch"
-            app:layout_constraintTop_toTopOf="@+id/music_switch" />
-
         <com.kyleduo.switchbutton.SwitchButton
             android:id="@+id/sound_switch"
             android:layout_width="wrap_content"
@@ -271,36 +355,22 @@
             app:layout_constraintStart_toEndOf="@+id/textView15"
             app:layout_constraintTop_toTopOf="@+id/textView15" />
 
-        <!--这个BubbleSeekBar组件的onProgressChanged貌似无法使用databinding,事件监听放到了fragment中了-->
-        <!--android:onProgressChanged="@{(seekBar,progress,progressFloat,fromUser)->setData.setTimeout(seekBar,progress,progressFloat,fromUser)}"-->
         <com.xw.repo.BubbleSeekBar
             android:id="@+id/seekBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:progress="@{setData.timeout}"
             app:bsb_bubble_color="#08D1E4"
-            app:bsb_second_track_color="#08D1E4"
             app:bsb_bubble_text_color="@color/colorPrimaryDark"
             app:bsb_max="100"
-            android:progress="@{setData.timeout}"
             app:bsb_min="3"
+            app:bsb_second_track_color="#08D1E4"
             app:bsb_show_section_mark="false"
             app:layout_constraintBottom_toBottomOf="@+id/textView11"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView11"
             app:layout_constraintTop_toTopOf="@+id/textView11" />
-
-        <TextView
-            android:id="@+id/textView11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/time_info_str"
-            app:layout_constraintBottom_toTopOf="@+id/guideline26"
-            app:layout_constraintEnd_toStartOf="@+id/seekBar"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline35" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

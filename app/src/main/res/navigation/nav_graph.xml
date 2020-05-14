@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/questionFragment"
         android:name="cn.kanyun.calc.fragment.QuestionFragment"
-        android:label="question_fragment"
-        tools:layout="@layout/question_fragment" >
+        android:label="答卷"
+        tools:layout="@layout/question_fragment">
         <action
             android:id="@+id/action_questionFragment_to_loseFragment"
             app:destination="@id/loseFragment" />
@@ -23,8 +23,8 @@
     <fragment
         android:id="@+id/loseFragment"
         android:name="cn.kanyun.calc.fragment.LoseFragment"
-        android:label="lose_fragment"
-        tools:layout="@layout/lose_fragment" >
+        android:label="失败"
+        tools:layout="@layout/lose_fragment">
         <action
             android:id="@+id/action_loseFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
@@ -35,8 +35,8 @@
     <fragment
         android:id="@+id/unlockFragment"
         android:name="cn.kanyun.calc.fragment.UnlockFragment"
-        android:label="unlock_fragment"
-        tools:layout="@layout/unlock_fragment" >
+        android:label="解锁"
+        tools:layout="@layout/unlock_fragment">
         <action
             android:id="@+id/action_unlockFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
@@ -44,7 +44,7 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="cn.kanyun.calc.fragment.MainFragment"
-        android:label="fragment_main"
+        android:label="主页"
         tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_mainFragment_to_questionFragment"
@@ -63,8 +63,8 @@
     <fragment
         android:id="@+id/settingFragment"
         android:name="cn.kanyun.calc.fragment.SettingFragment"
-        android:label="fragment_setting"
-        tools:layout="@layout/fragment_setting" >
+        android:label="设置"
+        tools:layout="@layout/fragment_setting">
         <action
             android:id="@+id/action_settingFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
@@ -72,13 +72,13 @@
     <fragment
         android:id="@+id/meFragment"
         android:name="cn.kanyun.calc.fragment.MeFragment"
-        android:label="me_fragment"
+        android:label="我的"
         tools:layout="@layout/me_fragment" />
     <fragment
         android:id="@+id/jigsawPuzzleFragment"
         android:name="cn.kanyun.calc.fragment.JigsawPuzzleFragment"
-        android:label="fragment_jigsaw_puzzle"
-        tools:layout="@layout/fragment_jigsaw_puzzle" >
+        android:label="拼图"
+        tools:layout="@layout/fragment_jigsaw_puzzle">
         <action
             android:id="@+id/action_jigsawPuzzleFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
